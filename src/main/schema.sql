@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS customers (
     customer_id serial PRIMARY KEY,
-    email varchar(100),
-    password varchar(100),
+    email varchar(100) NOT NULL UNIQUE,
+    password varchar(100) NOT NULL UNIQUE,
     phone_number varchar(20),
     first_name varchar(20),
     last_name varchar(20),
@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS customers (
     second_street_address varchar(50),
     state varchar(10),
     zip varchar(5),
-    country varchar(20)
+    country varchar(20),
+    admin boolean
 );
 
 CREATE TABLE IF NOT EXISTS storage_units (
