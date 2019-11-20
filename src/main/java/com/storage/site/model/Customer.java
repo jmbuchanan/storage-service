@@ -1,12 +1,18 @@
 package com.storage.site.model;
 
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity(name = "customers")
 @Table
-public @Data class Customer {
+public @Data class Customer implements UserDetails{
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -36,7 +42,13 @@ public @Data class Customer {
     private String country;
     private boolean admin;
 
-    public Customer(){};
+    @Transient
+    private Collection<? extends GrantedAuthority> authorities;
+
+    static {
+    }
+
+    public Customer(){}
 
     public Customer(String email, String password, String phoneNumber, String firstName, String lastName,
                     String streetAddress, String secondStreetAddress, String state, String zip, String country,
@@ -52,8 +64,51 @@ public @Data class Customer {
         this.zip = zip;
         this.country = country;
         this.admin = admin;
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        if (this.admin) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else {
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        this.authorities = authorities;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
     @Override
     public String toString() {
         return firstName + " " + lastName;
@@ -71,9 +126,6 @@ public @Data class Customer {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
     public void setPassword(String password) {
         this.password = password;
@@ -141,5 +193,12 @@ public @Data class Customer {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean flag) {
+        this.admin = flag;
     }
 }
