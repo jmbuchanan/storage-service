@@ -40,15 +40,15 @@ public @Data class Customer implements UserDetails{
     private String state;
     private String zip;
     private String country;
+
     private boolean admin;
 
     @Transient
     private Collection<? extends GrantedAuthority> authorities;
 
-    static {
-    }
 
-    public Customer(){}
+    public Customer(){
+    }
 
     public Customer(String email, String password, String phoneNumber, String firstName, String lastName,
                     String streetAddress, String secondStreetAddress, String state, String zip, String country,
@@ -64,6 +64,15 @@ public @Data class Customer implements UserDetails{
         this.zip = zip;
         this.country = country;
         this.admin = admin;
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities() {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (this.admin) {
@@ -72,12 +81,9 @@ public @Data class Customer implements UserDetails{
         } else {
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
+        System.out.println(this.admin);
         this.authorities = authorities;
-    }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
     }
 
     @Override
@@ -194,6 +200,7 @@ public @Data class Customer implements UserDetails{
     public void setCountry(String country) {
         this.country = country;
     }
+
     public boolean isAdmin() {
         return admin;
     }

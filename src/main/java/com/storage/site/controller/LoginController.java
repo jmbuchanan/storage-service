@@ -1,6 +1,5 @@
 package com.storage.site.controller;
 
-import com.storage.site.model.Customer;
 import com.storage.site.repository.CustomerRepository;
 import com.storage.site.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,16 +39,16 @@ public class LoginController {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        if (!customerService.customerExists(email)) {
+        UserDetails user = customerService.loadUserByUsername(email);
+
+        if (user == null) {
             return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
         }
 
-        Customer customer = customerRepository.findByEmail(email);
-        String storedPassword = customer.getPassword();
+        String storedPassword = user.getPassword();
 
         if (passwordEncoder.matches(password, storedPassword)) {
             System.out.println("Passwords match");
-            UserDetails user = customerService.loadUserByUsername(email);
             Authentication auth = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
             System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());

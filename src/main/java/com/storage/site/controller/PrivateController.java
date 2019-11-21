@@ -19,7 +19,7 @@ public class PrivateController {
     @Autowired
     StorageUnitRepository storageUnitRepository;
 
-    @GetMapping("/getAllUnits")
+    @GetMapping
     public List<StorageUnit> getAllUnits() {
         List<StorageUnit> units = new ArrayList<>();
         storageUnitRepository.findAll().forEach(

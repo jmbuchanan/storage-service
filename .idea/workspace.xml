@@ -3,7 +3,17 @@
   <component name="ChangeListManager">
     <list default="true" id="cba12baa-4adb-4334-bbc2-690708d2430f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/storage/site/config/JwtTokenFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/storage/site/config/JWTAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/storage/site/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/storage/site/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/storage/site/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/storage/site/controller/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/storage/site/controller/PrivateController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/storage/site/controller/PrivateController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/storage/site/model/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/storage/site/model/Customer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/storage/site/service/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/storage/site/service/CustomerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/storage/site/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/storage/site/config/SecurityConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/storage/site/controller/LoginController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/storage/site/controller/LoginController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/storage/site/controller/PrivateController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/storage/site/controller/PrivateController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/storage/site/model/Customer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/storage/site/model/Customer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/storage/site/service/CustomerService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/storage/site/service/CustomerService.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,6 +47,7 @@
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Problems" />
