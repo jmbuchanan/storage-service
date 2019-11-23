@@ -10,10 +10,10 @@ import java.io.IOException;
 
 public class JWTAuthenticationFilter extends GenericFilterBean {
 
-    private JwtTokenProvider jwtTokenProvider;
+    private JwtTokenUtil jwtTokenUtil;
 
-    public JWTAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public JWTAuthenticationFilter(JwtTokenUtil jwtTokenUtil) {
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @Override

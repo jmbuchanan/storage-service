@@ -81,7 +81,6 @@ public @Data class Customer implements UserDetails{
         } else {
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
-        System.out.println(this.admin);
         this.authorities = authorities;
 
     }
