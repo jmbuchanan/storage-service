@@ -11,14 +11,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@CrossOrigin
 public class LoginController {
 
     @Autowired
@@ -34,13 +32,14 @@ public class LoginController {
     PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
-    ResponseEntity<String> createAuthenticationToken(HttpServletRequest request) {
+    ResponseEntity<?> createAuthenticationToken(HttpServletRequest request) {
 
         //Refactor to only query once
 
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-
+        System.out.println(email);
+        System.out.println(password);
         UserDetails user = customerService.loadUserByUsername(email);
 
         if (user == null) {
@@ -52,9 +51,9 @@ public class LoginController {
         if (passwordEncoder.matches(password, storedPassword)) {
             Authentication auth = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
             final String token = jwtTokenUtil.generateToken(user);
-            System.out.println(token);
+            System.out.println("Login controller token generated: " + token);
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Set-Cookie", "Authorization=Bearer " + token);
+            headers.add("Set-Cookie", "Authorization=" + token);
             return new ResponseEntity<String>(headers, HttpStatus.OK);
         }
 

@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Entity(name = "storage_units")
 @Table
-public @Data class StorageUnit {
+public @Data class Unit {
 
     @Id
     @Column(name = "unit_number", unique= true)

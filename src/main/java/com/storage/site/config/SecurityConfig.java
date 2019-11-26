@@ -8,9 +8,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -22,22 +24,30 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JWTAuthenticationFilter jwtRequestFilter;
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
 
     @Override
     protected void  configure(HttpSecurity http) throws Exception {
-        http
-                .cors()
-                .and()
-                .csrf().disable()
-                //.authorizeRequests()
-                //    .antMatchers("/private").hasRole("ADMIN")
-                //.and()
-                .authorizeRequests()
-                    .antMatchers("/login", "/private").permitAll()
-                .and()
-                .authorizeRequests()
-                    .anyRequest().hasRole("USER");
+        http.cors().and().csrf().disable().authorizeRequests()
+            .antMatchers("/customers/getAllCustomers").hasRole("ADMIN")
+            .antMatchers("/customers/getAllCustomers/export").hasRole("ADMIN")
+            .antMatchers("/units/getAllUnits").hasRole("USER")
+            .and()
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+            .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+            .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
     }
 
     @Bean
@@ -67,4 +77,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+
 }

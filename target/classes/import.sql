@@ -20,8 +20,8 @@ INSERT INTO customers(
     (4, 'jim@netscape.com', 'password', '143-281-0092', 'Jim', 'Sanders', '9988 Paces Ferry', '', 'FL', '29750', 'USA', false),
     (5, 'bjorg@cooltech.biz', 'password', '314-442-5781', 'Bjorg', 'Dahl', '855 Hollywood Blvd', 'Apt 1315', 'SC', '43301', 'USA', false),
     (6, 'johnny@yahoo.com', 'password', '172-226-9484', 'Johnny', 'Quest', '934 Terminus Way', '', 'GA', '30517', 'USA', false),
-    (7, 'jennifer@netscape.com', 'password', '282-433-4063', 'Jennifer', 'Lipscomb', '122 Baker St', 'PO Box 234', 'GA', '30549', 'USA', false),
-    (8, 'jmbuchanan1992@gmail.com', '$2a$10$5GtCpR05vImHdUM6ahN5Leoc52AHA0UteD8mbY7wUCvrUvwXIrkWu', '706-612-5081', 'Matt', 'Buchanan', '235 Pharr Rd NE', 'Apt 1315', 'GA', '30549', 'USA', true
+    (7, 'user', '$2a$10$l5Bg.IdnOn.y10z99r551OCu6l/OUsstmIuZlqfET9TGJhPW4pDY2', '282-433-4063', 'Jim', 'Everyman', '122 Baker St', 'PO Box 234', 'GA', '30549', 'USA', false),
+    (8, 'admin', '$2a$10$IfglSOEWrnxEoU8C8Fm5feiLxu.73d5rfFIlJOpowIOTWZXuwaT.m', '706-612-5081', 'Matt', 'Buchanan', '235 Pharr Rd NE', 'Apt 1315', 'GA', '30549', 'USA', true
 );
 
 alter sequence customers_customer_id_seq restart with 9;
