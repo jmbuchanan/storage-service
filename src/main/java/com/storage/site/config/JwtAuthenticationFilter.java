@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class JWTAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private CustomerService customerService;
@@ -32,6 +32,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         if (request.getRequestURI().equals("/login")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        if (request.getRequestURI().equals("/customers/addCustomer")) {
             chain.doFilter(request, response);
             return;
         }
