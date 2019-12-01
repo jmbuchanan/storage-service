@@ -25,7 +25,7 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${cors.origin}")
-    private String corsOrigin;
+    private String[] corsOrigin;
 
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
