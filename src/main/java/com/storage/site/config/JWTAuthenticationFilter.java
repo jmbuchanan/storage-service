@@ -36,6 +36,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        if (request.getRequestURI().equals("/customers/addCustomer")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         Cookie[] cookies = request.getCookies();
 
         for (Cookie c: cookies) {
