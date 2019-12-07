@@ -3,9 +3,7 @@ package com.storage.site.controller;
 import com.storage.site.model.Customer;
 import com.storage.site.repository.CustomerRepository;
 import com.storage.site.service.CustomerService;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -76,25 +77,37 @@ public class CustomerController {
 
 
         //Create Workbook
-
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet("Customers");
 
+        //Header formatter
+        CellStyle style = wb.createCellStyle();
+        style.setFillForegroundColor(IndexedColors.BLUE1.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
         //Create Headers
+
+        List<String> header = new ArrayList<>();
+        header.add("First Name");
+        header.add("Last Name");
+        header.add("Email");
+        header.add("Phone Number");
+        header.add("Street Address");
+        header.add("Street Address 2");
+        header.add("State");
+        header.add("Zip");
+        header.add("Country");
+        header.add("Admin");
+
         Row row = sheet.createRow(0);
-        row.createCell(0).setCellValue("First Name");
-        row.createCell(1).setCellValue("Last Name");
-        row.createCell(2).setCellValue("Email");
-        row.createCell(3).setCellValue("Phone Number");
-        row.createCell(4).setCellValue("Street Address");
-        row.createCell(5).setCellValue("Street Address 2");
-        row.createCell(6).setCellValue("State");
-        row.createCell(7).setCellValue("Zip");
-        row.createCell(8).setCellValue("Country");
-        row.createCell(9).setCellValue("Admin");
+
+        for (int i = 0 ; i < header.size(); i++) {
+            row.createCell(i).setCellValue(header.get(i));
+            row.getCell(i).setCellStyle(style);
+        }
 
         //Write Data
-        for (var i = 1; i < customers.size(); i++) {
+        for (int i = 1; i < customers.size(); i++) {
             row = sheet.createRow(i);
             row.createCell(0).setCellValue(customers.get(i).getFirstName());
             row.createCell(1).setCellValue(customers.get(i).getLastName());
@@ -117,8 +130,13 @@ public class CustomerController {
         byte[] bytes = baos.toByteArray();
 
         HttpHeaders headers = new HttpHeaders();
+
+        Date date = new Date();
+        Format formatter = new SimpleDateFormat("MM-dd-yy");
+        String formattedDate = formatter.format(date);
+
         headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Customers.xlsx");
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"Customers " + formattedDate + ".xlsx");
 
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }

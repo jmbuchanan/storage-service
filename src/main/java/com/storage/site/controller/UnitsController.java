@@ -57,7 +57,7 @@ public class UnitsController {
         row.createCell(5).setCellValue("Days Delinquent");
 
         //Write Data
-        for (var i = 1; i < units.size(); i++) {
+        for (int i = 1; i < units.size(); i++) {
             row = sheet.createRow(i);
             row.createCell(0).setCellValue(units.get(i).getUnitNumber());
             row.createCell(1).setCellValue(units.get(i).isLarge());
