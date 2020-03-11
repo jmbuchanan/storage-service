@@ -42,10 +42,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         Cookie[] cookies = request.getCookies();
+        System.out.println(cookies);
 
-        for (Cookie c: cookies) {
-            System.out.println("Name: " + c.getName());
-            System.out.println("Value: " + c.getValue());
+        if (cookies != null && cookies.length > 0) {
+            for (Cookie c : cookies) {
+                System.out.println("Name: " + c.getName());
+                System.out.println("Value: " + c.getValue());
+            }
         }
 
         String requestToken = null;

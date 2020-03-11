@@ -10,12 +10,13 @@ import javax.persistence.*;
 
 import java.util.Date;
 
-@Entity(name = "storage_units")
+@Entity(name = "units")
 @Table
-public @Data class Unit {
+@Data
+public class Unit {
 
     @Id
-    @Column(name = "unit_number", unique= true)
+    @Column(name = "unit_id", unique= true)
     private Long unitNumber;
 
     @Column(name = "is_large")
@@ -32,7 +33,6 @@ public @Data class Unit {
 
     @Column(name = "start_date")
     private Date startDate;
-
 
 }
 

@@ -12,12 +12,13 @@ import java.util.List;
 
 @Entity(name = "customers")
 @Table
-public @Data class Customer implements UserDetails{
+@Data
+public class Customer implements UserDetails{
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "customer_id")
-    private Long customerId;
+    private long customerId;
 
     @Column(unique = true)
     private String email;
@@ -75,6 +76,7 @@ public @Data class Customer implements UserDetails{
     public void setAuthorities() {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
+
         if (this.admin) {
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -82,7 +84,6 @@ public @Data class Customer implements UserDetails{
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
         this.authorities = authorities;
-
     }
 
     @Override
@@ -114,97 +115,10 @@ public @Data class Customer implements UserDetails{
     public boolean isEnabled() {
         return true;
     }
+
     @Override
     public String toString() {
         return firstName + " " + lastName;
     }
 
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getStreetAddress() {
-        return streetAddress;
-    }
-
-    public void setStreetAddress(String streetAddress) {
-        this.streetAddress = streetAddress;
-    }
-
-    public String getSecondStreetAddress() {
-        return secondStreetAddress;
-    }
-
-    public void setSecondStreetAddress(String secondStreetAddress) {
-        this.secondStreetAddress = secondStreetAddress;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean flag) {
-        this.admin = flag;
-    }
 }
