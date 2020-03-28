@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.WebUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,6 +16,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -31,71 +32,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        if (request.getRequestURI().equals("/login")) {
-            chain.doFilter(request, response);
-            return;
-        }
+        List<String> whiteList = new ArrayList<>();
 
-        if (request.getRequestURI().equals("/customers/addCustomer")) {
+        whiteList.add("/login");
+        whiteList.add("/customers/addCustomer");
+
+        if (whiteList.contains(request.getRequestURI())) {
             chain.doFilter(request, response);
             return;
         }
 
         Cookie[] cookies = request.getCookies();
-        System.out.println(cookies);
 
-        if (cookies != null && cookies.length > 0) {
-            for (Cookie c : cookies) {
-                System.out.println("Name: " + c.getName());
-                System.out.println("Value: " + c.getValue());
+        /*minimal passing of security chain happens like this:
+            customer implements userdetails ->  ? - > authentication object -> set authentication in applicationContextHolder.getContext.setAuthorization?
+         */
+
+        String authorization = null;
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("Authorization")) {
+                    authorization = cookie.getValue();
+                }
+            } if (authorization == null) {
+                System.out.println("No authorization");
             }
         }
-
-        String requestToken = null;
-
-        try {
-            final Cookie authCookie = WebUtils.getCookie(request, "Authorization");
-            requestToken = authCookie.getValue();
-        } catch (Exception e) {
-            e.getMessage();
-        }
-
-        String username = null;
-        String jwtToken = requestToken;
-
-        if (requestToken != null) {
-
-            try {
-                username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
-            } catch (ExpiredJwtException e) {
-                System.out.println("Token expired");
-            }
-        } else {
-            System.out.println(requestToken);
-            logger.warn("Does not start with Bearer");
-        }
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-            UserDetails userDetails = this.customerService.loadUserByUsername(username);
-
-            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
-
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
-
-                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(auth);
-
-                System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-                System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-            }
-        }
-
-        chain.doFilter(request, response);
 
     }
 
