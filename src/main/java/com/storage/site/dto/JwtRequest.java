@@ -1,9 +1,6 @@
-package com.storage.site.config;
+package com.storage.site.dto;
 
-import java.io.Serializable;
-
-public class JwtRequest implements Serializable {
-    private static final long serialVersionUID = 9128701090734L;
+public class JwtRequest {
 
     private String username;
     private String password;

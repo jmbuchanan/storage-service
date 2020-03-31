@@ -1,59 +1,38 @@
 package com.storage.site.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Entity(name = "customers")
-@Table
-@Data
-public class Customer implements UserDetails{
+@Getter
+@Setter
+public class Customer implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "customer_id")
     private long customerId;
-
-    @Column(unique = true)
     private String email;
     private String password;
-
-    @Column(name = "phone_number")
     private String phoneNumber;
-
-    @Column(name = "first_name")
     private String firstName;
-
-    @Column(name = "last_name")
     private String lastName;
-
-    @Column(name = "street_address")
     private String streetAddress;
-
-    @Column(name = "second_street_address")
     private String secondStreetAddress;
     private String state;
     private String zip;
     private String country;
+    private boolean isAdmin;
 
-    private boolean admin;
-
-    @Transient
     private Collection<? extends GrantedAuthority> authorities;
 
-
-    public Customer(){
-    }
-
-    public Customer(String email, String password, String phoneNumber, String firstName, String lastName,
+    public Customer(long customerId, String email, String password, String phoneNumber, String firstName, String lastName,
                     String streetAddress, String secondStreetAddress, String state, String zip, String country,
-                    boolean admin) {
+                    boolean isAdmin) {
+        this.customerId = customerId;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
@@ -64,9 +43,10 @@ public class Customer implements UserDetails{
         this.state = state;
         this.zip = zip;
         this.country = country;
-        this.admin = admin;
-    }
+        this.isAdmin = isAdmin;
 
+        this.setAuthorities();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -77,7 +57,7 @@ public class Customer implements UserDetails{
 
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        if (this.admin) {
+        if (this.isAdmin) {
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         } else {

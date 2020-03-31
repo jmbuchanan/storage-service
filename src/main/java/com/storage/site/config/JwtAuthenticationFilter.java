@@ -1,12 +1,8 @@
 package com.storage.site.config;
 
 import com.storage.site.service.CustomerService;
-import io.jsonwebtoken.ExpiredJwtException;
+import com.storage.site.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,17 +17,19 @@ import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
+/*
     @Autowired
     private CustomerService customerService;
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-
+    private JwtService jwtService;
+*/
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
+        chain.doFilter(request, response);
+        /*
         List<String> whiteList = new ArrayList<>();
 
         whiteList.add("/login");
@@ -39,27 +37,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (whiteList.contains(request.getRequestURI())) {
             chain.doFilter(request, response);
-            return;
         }
 
-        Cookie[] cookies = request.getCookies();
-
-        /*minimal passing of security chain happens like this:
-            customer implements userdetails ->  ? - > authentication object -> set authentication in applicationContextHolder.getContext.setAuthorization?
-         */
-
-        String authorization = null;
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("Authorization")) {
-                    authorization = cookie.getValue();
-                }
-            } if (authorization == null) {
-                System.out.println("No authorization");
-            }
+        if (jwtService.isTokenValid(request)) {
+            chain.doFilter(request, response);
         }
 
+        response.setStatus(401);
+        chain.doFilter(request, response);
+*/
     }
-
 }

@@ -5,33 +5,22 @@
 
 package com.storage.site.model;
 
-import lombok.Data;
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
-@Entity(name = "units")
-@Table
-@Data
+@AllArgsConstructor
+@Getter
+@Setter
 public class Unit {
 
-    @Id
-    @Column(name = "unit_id", unique= true)
-    private Long unitNumber;
-
-    @Column(name = "is_large")
+    private long unitNumber;
     private boolean isLarge;
-
-    @Column(name = "is_occupied")
     private boolean isOccupied;
-
-    @Column(name = "is_delinquent")
     private boolean isDelinquent;
-
-    @Column(name = "days_delinquent")
-    private Long daysDelinquent;
-
-    @Column(name = "start_date")
+    private long daysDelinquent;
     private Date startDate;
 
 }

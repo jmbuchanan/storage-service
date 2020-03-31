@@ -1,17 +1,37 @@
 package com.storage.site.model;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
 
-@Entity(name = "transactions")
-@Table
-@Data
+@AllArgsConstructor
+@Getter
+@Setter
 public class Transaction {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name = "transaction_id")
-    private long transactionId;
+    private int id;  // up to 2,147,483,648
+    private TYPE type;
+    private Date date;
+    private BigDecimal amount;
+    private short customer_id; // up to 32,767
+    private byte unit_id;  // up to 128
 
+
+    public enum TYPE {
+        CHARGE("charge"),
+        PAYMENT("payment");
+
+        private String name;
+
+        private TYPE(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+    }
 }

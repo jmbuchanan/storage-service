@@ -1,5 +1,5 @@
 INSERT INTO customers(
-    customer_id,
+    id,
     email,
     password,
     phone_number,
@@ -10,7 +10,7 @@ INSERT INTO customers(
     state,
     zip,
     country,
-    admin
+    is_admin
 )
 
     VALUES (
@@ -24,10 +24,8 @@ INSERT INTO customers(
     (8, 'admin', '$2a$10$IfglSOEWrnxEoU8C8Fm5feiLxu.73d5rfFIlJOpowIOTWZXuwaT.m', '881-080-0800', 'Matt', 'Buchanan', '123 Cool Street', 'Apt 4263', 'GA', '30517', 'USA', true
 );
 
-alter sequence customers_customer_id_seq restart with 9;
-
 INSERT into units (
-    unit_id,
+    id,
     is_large,
     is_occupied,
     is_delinquent,
@@ -78,12 +76,12 @@ INSERT into units (
 );
 
 INSERT INTO transactions (
-    transaction_id,
-    transaction_type,
-    transaction_date,
+    id,
+    type,
+    date,
     amount,
     customer_id,
     unit_id
     ) VALUES (
     1, 'charge', '2020-02-01', 40.00, 1, 1
-    );
+);

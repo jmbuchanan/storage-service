@@ -1,37 +1,28 @@
 package com.storage.site.controller;
 
 import com.storage.site.model.Customer;
-import com.storage.site.repository.CustomerRepository;
 import com.storage.site.service.CustomerService;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
 
     @Autowired
-    CustomerRepository customerRepository;
+    CustomerService customerService;
 
+    @GetMapping("getAllCustomers")
+    public List<Customer> getAllCustomers() {
+
+        return customerService.getAllCustomers();
+
+    }
+/*
     @Autowired
     CustomerService customerService;
 
@@ -47,14 +38,14 @@ public class CustomerController {
     }
 
     @PostMapping("/addCustomer")
-    public ResponseEntity<String> addCustomer(HttpServletRequest formData) {
-        String email = formData.getParameter("email");
-        String password = passwordEncoder.encode(formData.getParameter("password"));
+    public ResponseEntity<String> addCustomer(HttpServletRequest request) {
+        String email = request.getParameter("email");
+        String password = passwordEncoder.encode(request.getParameter("password"));
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "text/html; charset=UTF-8");
 
-        if (customerService.customerExists(email)) {
+        if (customerService.doesCustomerExist(email)) {
             return new ResponseEntity<String>("Account Exists", headers, HttpStatus.CONFLICT);
         }
 
@@ -140,6 +131,8 @@ public class CustomerController {
 
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
+
+    */
 
 
 }

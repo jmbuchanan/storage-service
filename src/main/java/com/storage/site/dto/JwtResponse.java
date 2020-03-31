@@ -1,8 +1,7 @@
-package com.storage.site.config;
+package com.storage.site.dto;
 
 public class JwtResponse {
 
-    private static final long serialVersionUID = -19230810970492L;
     private final String jwttoken;
 
     public JwtResponse(String jwttoken) {
