@@ -4,16 +4,14 @@ package com.storage.site.service;
 import com.storage.site.model.Customer;
 import com.storage.site.model.rowmapper.CustomerRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CustomerService implements UserDetailsService {
+public class CustomerService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -21,28 +19,48 @@ public class CustomerService implements UserDetailsService {
     @Autowired
     private CustomerRowMapper customerRowMapper;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
-        String [] sqlParam = {email};
-
-        List<Customer> customers = jdbcTemplate.query("SELECT * FROM customers WHERE email LIKE ?", sqlParam, customerRowMapper);
-
-        if (customers == null) {
-            throw new UsernameNotFoundException(email);
-        }
-
-        Customer customer = customers.get(0);
-
-        customer.setAuthorities();
-        return customer;
-
-    }
-
     public List<Customer> getAllCustomers() {
 
         List<Customer> customers = jdbcTemplate.query("SELECT * FROM customers", customerRowMapper);
 
         return customers;
+    }
+
+    public Customer getCustomerByEmail(String email) {
+
+        Object [] sqlParam = {email};
+
+        try {
+            Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE email LIKE ?", sqlParam, customerRowMapper);
+            return customer;
+
+        } catch (EmptyResultDataAccessException e) {
+            e.getMessage();
+        }
+
+        return new Customer();
+    }
+
+    public boolean save(Customer customer) {
+
+        jdbcTemplate.update(
+            "INSERT INTO "
+            + "customers(email, password, phone_number, first_name, last_name, "
+            + "  street_address, second_street_address, state, zip, country, is_admin) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            customer.getEmail(),
+            customer.getPassword(),
+            customer.getPhoneNumber(),
+            customer.getFirstName(),
+            customer.getLastName(),
+            customer.getStreetAddress(),
+            customer.getSecondStreetAddress(),
+            customer.getState(),
+            customer.getZip(),
+            customer.getCountry(),
+            false
+        );
+
+        return true;
     }
 }

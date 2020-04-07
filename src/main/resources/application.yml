@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/storage_site
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+  # gets rid of warning log info on startup
+  # https://github.com/spring-projects/spring-boot/issues/12007
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+jwt:
+  secret: ${STORAGE_SITE_JWT_SECRET}
+
+cors:
+  origin: http://localhost:3000
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: DEBUG
