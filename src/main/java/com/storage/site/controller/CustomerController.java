@@ -51,7 +51,6 @@ public class CustomerController {
         Customer customer = customerService.getCustomerByEmail(email);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "text/html; charset=UTF-8");
 
         if (isExistingCustomer(customer)) {
 
@@ -66,9 +65,9 @@ public class CustomerController {
             String token = jwtService.generateToken(customer);
             System.out.println("Issuing JWT: " + token);
 
-            headers.add("Set-Cookie", "Authorization=" + token);
+            headers.add("Set-Cookie", "Authorization=" + token + "; Path=/");
 
-            return new ResponseEntity<String>("Saved Successfully!", headers, HttpStatus.SEE_OTHER);
+            return new ResponseEntity<>(headers, HttpStatus.OK);
         }
     }
 
