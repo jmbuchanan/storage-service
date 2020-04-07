@@ -31,7 +31,7 @@ public class CustomerService {
         Object [] sqlParam = {email};
 
         try {
-            Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE email LIKE ?", sqlParam, customerRowMapper);
+            Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE email LIKE LOWER(?)", sqlParam, customerRowMapper);
             return customer;
 
         } catch (EmptyResultDataAccessException e) {
