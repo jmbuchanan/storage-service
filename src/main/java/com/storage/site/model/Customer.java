@@ -27,7 +27,7 @@ public class Customer {
                     String streetAddress, String secondStreetAddress, String state, String zip, String country,
                     boolean isAdmin) {
         this.id = id;
-        this.email = email;
+        this.email = email.toLowerCase();
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
@@ -38,6 +38,10 @@ public class Customer {
         this.zip = zip;
         this.country = country;
         this.isAdmin = isAdmin;
+    }
+
+    public void setEmail(String email) {
+        this.email = email.toLowerCase();
     }
 
     @Override
