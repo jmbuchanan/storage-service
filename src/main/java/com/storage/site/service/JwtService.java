@@ -14,11 +14,11 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private long expire = 600000;
+    @Value("${jwt.expiration}")
+    private long expiration;
 
     @Value("${jwt.secret}")
     private String secret;
-
 
     public String generateToken(Customer customer) {
 
@@ -30,7 +30,7 @@ public class JwtService {
                 .setSubject(customer.getEmail())
                 .setClaims(adminClaim)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expire))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
 
@@ -51,11 +51,7 @@ public class JwtService {
     public boolean validateAdmin(HttpServletRequest request) {
         String authorization = getAuthorization(request);
 
-        if (authorization == null) {
-            return false;
-        }
-
-        if (!isDateValid(authorization)) {
+        if (authorization == null || !isDateValid(authorization)) {
             return false;
         }
 

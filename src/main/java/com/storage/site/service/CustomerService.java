@@ -1,6 +1,5 @@
 package com.storage.site.service;
 
-
 import com.storage.site.model.Customer;
 import com.storage.site.model.rowmapper.CustomerRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +27,10 @@ public class CustomerService {
 
     public Customer getCustomerByEmail(String email) {
 
-        Object [] sqlParam = {email};
+        Object [] sqlParam = {email.toLowerCase()};
 
         try {
-            Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE email LIKE LOWER(?)", sqlParam, customerRowMapper);
+            Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE email LIKE ?", sqlParam, customerRowMapper);
             return customer;
 
         } catch (EmptyResultDataAccessException e) {

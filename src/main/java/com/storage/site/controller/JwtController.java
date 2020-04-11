@@ -41,8 +41,8 @@ public class JwtController {
         String email = request.getParameter("email");
         String providedPassword = request.getParameter("password");
 
-	System.out.println(email);
-	System.out.println(providedPassword);
+        System.out.println(email);
+        System.out.println(providedPassword);
 
         Customer customer = customerService.getCustomerByEmail(email);
 

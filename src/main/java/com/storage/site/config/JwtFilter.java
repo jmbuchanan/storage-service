@@ -69,24 +69,26 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private RoleRequired findRoleRequired(HttpServletRequest request) {
 
+        String uri = request.getRequestURI();
+
         List<String> noRoleRequired = new ArrayList<>();
 
-        noRoleRequired.add("/login");
         noRoleRequired.add("/customers/addCustomer");
+        noRoleRequired.add("/login");
 
         List<String> adminRoleRequired = new ArrayList<>();
 
         adminRoleRequired.add("/customers/getAllCustomers");
-        adminRoleRequired.add("/units/getAllUnits");
-        adminRoleRequired.add("/transactions/getAllTransactions");
         adminRoleRequired.add("/customers/getAllCustomers/export");
+        adminRoleRequired.add("/units/getAllUnits");
         adminRoleRequired.add("/units/getAllUnits/export");
+        adminRoleRequired.add("/transactions/getAllTransactions");
         adminRoleRequired.add("/transactions/getAllTransactions/export");
 
-        if (noRoleRequired.contains(request.getRequestURI())) {
+        if (noRoleRequired.contains(uri)) {
             return RoleRequired.NONE;
         }
-        if (adminRoleRequired.contains(request.getRequestURI())) {
+        if (adminRoleRequired.contains(uri)) {
             return RoleRequired.ADMIN;
         }
 
