@@ -15,7 +15,7 @@ public class TransactionRowMapper implements RowMapper<Transaction> {
 
         return new Transaction(
                 rs.getInt("id"),
-                Transaction.TYPE.valueOf(rs.getString("type").toUpperCase()),
+                Transaction.Type.valueOf(rs.getString("type").toUpperCase()),
                 rs.getDate("date"),
                 rs.getBigDecimal("amount"),
                 rs.getShort("customer_id"),

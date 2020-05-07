@@ -25,6 +25,7 @@ public class JwtService {
         Map<String, Object> adminClaim = new HashMap<>();
 
         adminClaim.put("isAdmin", customer.isAdmin());
+        adminClaim.put("firstName", customer.getFirstName());
 
         String jwt = Jwts.builder()
                 .setSubject(customer.getEmail())

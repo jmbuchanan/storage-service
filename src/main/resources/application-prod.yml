@@ -1,2 +1,7 @@
 cors:
   origin: https://www.jeffersonminiwarehouses.com, https://jeffersonminiwarehouses.com
+
+
+stripe:
+  publishable:
+  secret: ${STRIPE_SECRET_PROD}

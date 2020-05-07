@@ -88,9 +88,9 @@ public class CustomerController {
         customer.setPhoneNumber(request.getParameter("phoneNumber"));
         customer.setStreetAddress(request.getParameter("streetAddress"));
         customer.setSecondStreetAddress(request.getParameter("secondStreetAddress"));
-        customer.setState(request.getParameter("state"));
+        customer.setCity(request.getParameter("city"));
+        customer.setState(Customer.State.valueOf(request.getParameter("state")));
         customer.setZip(request.getParameter("zip"));
-        customer.setCountry(request.getParameter("country"));
 
         return customer;
     }

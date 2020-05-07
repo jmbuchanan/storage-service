@@ -1,6 +1,8 @@
 package com.storage.site.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -15,17 +17,17 @@ public class Customer {
     private String lastName;
     private String streetAddress;
     private String secondStreetAddress;
-    private String state;
+    private String city;
+    private State state;
     private String zip;
-    private String country;
     private boolean isAdmin;
 
     public Customer() {
     }
 
     public Customer(long id, String email, String password, String phoneNumber, String firstName, String lastName,
-                    String streetAddress, String secondStreetAddress, String state, String zip, String country,
-                    boolean isAdmin) {
+                    String streetAddress, String secondStreetAddress, String city, State state, String zip, boolean isAdmin
+        ) {
         this.id = id;
         this.email = email.toLowerCase();
         this.password = password;
@@ -34,9 +36,9 @@ public class Customer {
         this.lastName = lastName;
         this.streetAddress = streetAddress;
         this.secondStreetAddress = secondStreetAddress;
+        this.city = city;
         this.state = state;
         this.zip = zip;
-        this.country = country;
         this.isAdmin = isAdmin;
     }
 
@@ -51,5 +53,14 @@ public class Customer {
         } else {
             return firstName + " " + lastName;
         }
+    }
+
+    public enum State {
+        AK, AL, AR, AS, AZ, CA, CO, CT, DC, DE,
+        FL, GA, GU, HI, IA, ID, IL, IN, KS, KY,
+        LA, MA, MD, ME, MI, MN, MO, MP, MS, MT,
+        NC, ND, NE, NH, NJ, NM, NV, NY, OH, OK,
+        OR, PA, PR, RI, SC, SD, TN, TX, UM, UT,
+        VA, VI, VT, WA, WI, WV, WY
     }
 }

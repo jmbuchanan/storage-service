@@ -3,8 +3,10 @@ package com.storage.site.service;
 import com.storage.site.model.Customer;
 import com.storage.site.model.Transaction;
 import com.storage.site.model.Unit;
-import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.DefaultIndexedColorMap;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -24,13 +26,15 @@ import java.util.stream.IntStream;
 public class ExcelService {
 
     @Autowired
-    CustomerService customerService;
+    private CustomerService customerService;
 
     @Autowired
-    TransactionService transactionService;
+    private TransactionService transactionService;
 
     @Autowired
-    UnitService unitService;
+    private UnitService unitService;
+
+    private XSSFColor headerColor = new XSSFColor(new java.awt.Color(33, 47, 61), new DefaultIndexedColorMap());
 
     public ResponseEntity<byte[]> generateCustomerWorkbook() {
 
@@ -40,13 +44,10 @@ public class ExcelService {
 
 
         //Create Workbook
-        Workbook wb = new XSSFWorkbook();
+        XSSFWorkbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet("Customers");
 
-        //Header formatter
-        CellStyle style = wb.createCellStyle();
-        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        XSSFCellStyle style = makeHeaderStyle(wb);
 
         //Create Headers
         List<String> header = new ArrayList<>();
@@ -56,9 +57,9 @@ public class ExcelService {
         header.add("Phone Number");
         header.add("Street Address");
         header.add("Street Address 2");
+        header.add("City");
         header.add("State");
         header.add("Zip");
-        header.add("Country");
         header.add("Admin");
 
         Row row = sheet.createRow(0);
@@ -77,9 +78,9 @@ public class ExcelService {
             row.createCell(3).setCellValue(customers.get(i).getPhoneNumber());
             row.createCell(4).setCellValue(customers.get(i).getStreetAddress());
             row.createCell(5).setCellValue(customers.get(i).getSecondStreetAddress());
-            row.createCell(6).setCellValue(customers.get(i).getState());
-            row.createCell(7).setCellValue(customers.get(i).getZip());
-            row.createCell(8).setCellValue(customers.get(i).getCountry());
+            row.createCell(6).setCellValue(customers.get(i).getCity());
+            row.createCell(7).setCellValue(customers.get(i).getState().toString());
+            row.createCell(8).setCellValue(customers.get(i).getZip());
             row.createCell(9).setCellValue(customers.get(i).isAdmin());
         }
 
@@ -116,13 +117,10 @@ public class ExcelService {
                 transaction -> transactions.add(transaction));
 
         //Create Workbook
-        Workbook wb = new XSSFWorkbook();
+        XSSFWorkbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet("Transactions");
 
-        //Header formatter
-        CellStyle style = wb.createCellStyle();
-        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        XSSFCellStyle style = makeHeaderStyle(wb);
 
         //Create Headers
         List<String> header = new ArrayList<>();
@@ -144,7 +142,7 @@ public class ExcelService {
         for (int i = 0; i < transactions.size(); i++) {
             row = sheet.createRow(i+1);
             row.createCell(0).setCellValue(transactions.get(i).getId());
-            row.createCell(1).setCellValue(transactions.get(i).getType().getName());
+            row.createCell(1).setCellValue(transactions.get(i).getType().toString());
             row.createCell(2).setCellValue(transactions.get(i).getDate());
             row.createCell(3).setCellValue(transactions.get(i).getAmount().toString());
             row.createCell(4).setCellValue(transactions.get(i).getCustomer_id());
@@ -180,13 +178,10 @@ public class ExcelService {
 
         //Create Workbook
 
-        Workbook wb = new XSSFWorkbook();
+        XSSFWorkbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet("Units");
 
-        //Header formatter
-        CellStyle style = wb.createCellStyle();
-        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        XSSFCellStyle style = makeHeaderStyle(wb);
 
         //Create Headers
         List<String> header = new ArrayList<>();
@@ -234,5 +229,18 @@ public class ExcelService {
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Units.xlsx");
 
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+    }
+
+    private XSSFCellStyle makeHeaderStyle(XSSFWorkbook wb) {
+
+        Font font = wb.createFont();
+        font.setColor(IndexedColors.WHITE.getIndex());
+
+        XSSFCellStyle style = wb.createCellStyle();
+        style.setFillForegroundColor(headerColor);
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFont(font);
+
+        return style;
     }
 }

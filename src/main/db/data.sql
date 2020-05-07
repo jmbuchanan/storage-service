@@ -6,21 +6,21 @@ INSERT INTO customers(
     last_name,
     street_address,
     second_street_address,
+    city,
     state,
     zip,
-    country,
     is_admin
 )
 
     VALUES (
-    'lucy@gmail.com', 'password', '471-505-0139', 'Lucy', 'Smith', '456 Mayfield Way', 'Apt 233', 'GA', '30295', 'USA', false),
-    ('dave@hotmail.com', 'password', '100-528-0109', 'Dave', 'Johnson', '914 Fannin St', '', 'GA', '30549', 'USA', false),
-    ('june@gmail.com', 'password', '603-078-1137', 'June', 'Davies', '235 Pharr Rd', '', 'GA', '30549', 'USA', false),
-    ('jim@netscape.com', 'password', '143-281-0092', 'Jim', 'Sanders', '9988 Paces Ferry', '', 'FL', '29750', 'USA', false),
-    ('bjorg@cooltech.biz', 'password', '314-442-5781', 'Bjorg', 'Dahl', '855 Hollywood Blvd', 'Apt 1315', 'SC', '43301', 'USA', false),
-    ('johnny@yahoo.com', 'password', '172-226-9484', 'Johnny', 'Quest', '934 Terminus Way', '', 'GA', '30517', 'USA', false),
-    ('user', '$2a$10$l5Bg.IdnOn.y10z99r551OCu6l/OUsstmIuZlqfET9TGJhPW4pDY2', '282-433-4063', 'Typical', 'User', '122 Baker St', 'PO Box 234', 'GA', '30549', 'USA', false),
-    ('admin', '$2a$10$IfglSOEWrnxEoU8C8Fm5feiLxu.73d5rfFIlJOpowIOTWZXuwaT.m', '881-080-0800', 'Matt', 'Buchanan', '123 Cool Street', 'Apt 4263', 'GA', '30517', 'USA', true
+    'lucy@gmail.com', 'password', '471-505-0139', 'Lucy', 'Smith', '456 Mayfield Way', 'Apt 233', 'Jefferson', 'GA', '30295', false),
+    ('dave@hotmail.com', 'password', '100-528-0109', 'Dave', 'Johnson', '914 Fannin St', '', 'Commerce', 'GA', '30549', false),
+    ('june@gmail.com', 'password', '603-078-1137', 'June', 'Davies', '235 Pharr Rd', '', 'Athens', 'GA', '30549', false),
+    ('jim@netscape.com', 'password', '143-281-0092', 'Jim', 'Sanders', '9988 Paces Ferry', '', 'Jacksonville', 'FL', '29750', false),
+    ('bjorg@cooltech.biz', 'password', '314-442-5781', 'Bjorg', 'Dahl', '855 Hollywood Blvd', 'Apt 1315', 'Charleston', 'SC', '43301', false),
+    ('johnny@yahoo.com', 'password', '172-226-9484', 'Johnny', 'Quest', '934 Terminus Way', '', 'Atlanta', 'GA', '30517', false),
+    ('user', '$2a$10$l5Bg.IdnOn.y10z99r551OCu6l/OUsstmIuZlqfET9TGJhPW4pDY2', '282-433-4063', 'Typical', 'User', '122 Baker St', 'PO Box 234', 'Jefferson', 'GA', '30549', false),
+    ('admin', '$2a$10$IfglSOEWrnxEoU8C8Fm5feiLxu.73d5rfFIlJOpowIOTWZXuwaT.m', '881-080-0800', 'Matt', 'Buchanan', '123 Cool Street', 'Apt 4263', 'Atlanta', 'GA', '30517', true
 );
 
 INSERT into units (

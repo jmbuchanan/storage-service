@@ -25,9 +25,9 @@ public class CustomerTest {
                 "last",
                 "streetAddr",
                 "streetAddr2",
-                "state",
+                "city",
+                Customer.State.GA,
                 "zip",
-                "country",
                 false
         );
 

@@ -45,8 +45,8 @@ public class CustomerService {
         jdbcTemplate.update(
             "INSERT INTO "
             + "customers(email, password, phone_number, first_name, last_name, "
-            + "  street_address, second_street_address, state, zip, country, is_admin) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            + "  street_address, second_street_address, city, state, zip, is_admin) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, CAST(? as state_type), ?, ?)",
             customer.getEmail(),
             customer.getPassword(),
             customer.getPhoneNumber(),
@@ -54,9 +54,9 @@ public class CustomerService {
             customer.getLastName(),
             customer.getStreetAddress(),
             customer.getSecondStreetAddress(),
-            customer.getState(),
+            customer.getCity(),
+            customer.getState().toString(),
             customer.getZip(),
-            customer.getCountry(),
             false
         );
 

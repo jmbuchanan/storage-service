@@ -4,7 +4,13 @@ spring:
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
 
-  # gets rid of warning log info on startup
+  # Stripe uses GSON instead of Jackson for JSON mapping
+  # https://github.com/stripe/stripe-java/issues/307
+  http:
+    converters:
+      preferred-json-mapper: gson
+
+  # gets rid of Postgres warning logs on startup
   # https://github.com/spring-projects/spring-boot/issues/12007
   jpa:
     properties:
@@ -16,6 +22,10 @@ spring:
 jwt:
   secret: ${STORAGE_SITE_JWT_SECRET}
   expiration: 28800000
+
+stripe:
+  publishable: pk_test_NpLxutjKOqdutIqGPyHkHyK300AMWKqV8o
+  secret: ${STRIPE_SECRET_DEV}
 
 cors:
   origin: http://localhost:3000

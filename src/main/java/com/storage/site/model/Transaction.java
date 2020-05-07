@@ -13,25 +13,20 @@ import java.util.Date;
 public class Transaction {
 
     private int id;  // up to 2,147,483,648
-    private TYPE type;
+    private Type type;
     private Date date;
     private BigDecimal amount;
     private short customer_id; // up to 32,767
     private byte unit_id;  // up to 128
 
 
-    public enum TYPE {
-        CHARGE("charge"),
-        PAYMENT("payment");
+    public enum Type {
+        CHARGE,
+        PAYMENT;
 
-        private String name;
-
-        private TYPE(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return this.name;
+        @Override
+        public String toString() {
+            return name().charAt(0) + name().substring(1).toLowerCase();
         }
     }
 }

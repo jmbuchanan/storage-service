@@ -75,6 +75,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         noRoleRequired.add("/customers/addCustomer");
         noRoleRequired.add("/login");
+        noRoleRequired.add("/transactions/stripe");
 
         List<String> adminRoleRequired = new ArrayList<>();
 
