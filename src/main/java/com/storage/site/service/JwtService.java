@@ -85,6 +85,9 @@ public class JwtService {
     }
 
     private boolean isDateValid(Claims claims) {
+        if (claims == null) {
+            return false;
+        }
 
         Date now = new Date(System.currentTimeMillis());
 
@@ -105,6 +108,12 @@ public class JwtService {
     }
 
     private Claims parseClaims(String authorization) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(authorization).getBody();
+        Claims claims = null;
+        try {
+            claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(authorization).getBody();
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return claims;
     }
 }
