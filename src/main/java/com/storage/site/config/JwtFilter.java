@@ -23,7 +23,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private JwtService jwtService;
 
-    private enum RoleRequired {
+    private enum Role {
         NONE, USER, ADMIN;
     }
 
@@ -32,50 +32,50 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        RoleRequired roleRequired = findRoleRequired(request);
+        boolean customerIsAuthorizedToAccessResource = checkIfCustomerIsAuthorizedToAccessResource(request);
 
-        boolean filterRequest = false;
-
-        switch (roleRequired) {
-            case NONE:
-
-                filterRequest = true;
-                break;
-
-            case USER:
-
-                if (jwtService.validateUser(request)) {
-                    filterRequest = true;
-                }
-                break;
-
-            case ADMIN:
-                if (jwtService.validateAdmin(request)) {
-                    filterRequest = true;
-                }
-                break;
-        }
-
-        if (filterRequest) {
+        if (customerIsAuthorizedToAccessResource) {
             chain.doFilter(request, response);
-            return;
-
         } else {
-
             response.setStatus(403);
-
         }
     }
 
-    private RoleRequired findRoleRequired(HttpServletRequest request) {
+    private boolean checkIfCustomerIsAuthorizedToAccessResource(HttpServletRequest request) {
+        Role roleRequired = findRoleRequiredToAccessResource(request);
+        boolean isAuthorized = checkIfCustomerHasRoleRequired(request, roleRequired);
+        return isAuthorized;
+    }
+
+    private Role findRoleRequiredToAccessResource(HttpServletRequest request) {
 
         String uri = request.getRequestURI();
 
-        List<String> noRoleRequired = new ArrayList<>();
+        List<String> resourcesWithNoRestrictions = populateResourcesWithNoRestrictions();
+        if (resourcesWithNoRestrictions.contains(uri)) {
+            return Role.NONE;
+        }
 
-        noRoleRequired.add("/customers/addCustomer");
-        noRoleRequired.add("/login");
-        noRoleRequired.add("/transactions/stripe");
+        List<String> resourcesRestrictedToAdmins = populateResourcesRestrictedToAdmins();
+        if (resourcesRestrictedToAdmins.contains(uri)) {
+            return Role.ADMIN;
+        }
+
+        return Role.USER;
+    }
+
+    private List<String> populateResourcesWithNoRestrictions() {
+
+        List<String> whiteListedResources = new ArrayList<>();
+
+        whiteListedResources.add("/customers/addCustomer");
+        whiteListedResources.add("/login");
+        whiteListedResources.add("/transactions/stripe");
+
+        return whiteListedResources;
+    }
+
+    private List<String> populateResourcesRestrictedToAdmins() {
 
         List<String> adminRoleRequired = new ArrayList<>();
 
@@ -86,14 +86,33 @@ public class JwtFilter extends OncePerRequestFilter {
         adminRoleRequired.add("/transactions/getAllTransactions");
         adminRoleRequired.add("/transactions/getAllTransactions/export");
 
-        if (noRoleRequired.contains(uri)) {
-            return RoleRequired.NONE;
-        }
-        if (adminRoleRequired.contains(uri)) {
-            return RoleRequired.ADMIN;
-        }
-
-        return RoleRequired.USER;
+        return adminRoleRequired;
     }
 
+
+
+    private boolean checkIfCustomerHasRoleRequired(HttpServletRequest request, Role roleRequired) {
+
+        boolean hasRoleRequired = false;
+
+        switch (roleRequired) {
+            case NONE:
+                hasRoleRequired = true;
+                break;
+
+            case USER:
+                if (jwtService.validateUser(request)) {
+                    hasRoleRequired = true;
+                }
+                break;
+
+            case ADMIN:
+                if (jwtService.validateAdmin(request)) {
+                    hasRoleRequired = true;
+                }
+                break;
+        }
+
+        return hasRoleRequired;
+    }
 }

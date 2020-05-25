@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Date;
+import java.util.*;
 
 @Service
 public class JwtService {
@@ -22,14 +20,11 @@ public class JwtService {
 
     public String generateToken(Customer customer) {
 
-        Map<String, Object> adminClaim = new HashMap<>();
-
-        adminClaim.put("isAdmin", customer.isAdmin());
-        adminClaim.put("firstName", customer.getFirstName());
+        Map<String, Object> claims = makeClaimsFrom(customer);
 
         String jwt = Jwts.builder()
                 .setSubject(customer.getEmail())
-                .setClaims(adminClaim)
+                .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS512, secret)
@@ -38,27 +33,32 @@ public class JwtService {
         return jwt;
     }
 
+    private Map<String, Object> makeClaimsFrom(Customer customer) {
+        Map<String, Object> claims = new HashMap<>();
+
+        claims.put("isAdmin", customer.isAdmin());
+        claims.put("firstName", customer.getFirstName());
+
+        return claims;
+    }
+
     public boolean validateUser(HttpServletRequest request) {
-
         String authorization = getAuthorization(request);
-
-        if (authorization != null && isDateValid(authorization)) {
-            return true;
-        } else {
+        if (authorization == null) {
             return false;
         }
+        Claims claims = parseClaims(authorization);
+        return isDateValid(claims);
     }
 
     public boolean validateAdmin(HttpServletRequest request) {
         String authorization = getAuthorization(request);
-
-        if (authorization == null || !isDateValid(authorization)) {
+        if (authorization == null) {
             return false;
         }
-
-        Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(authorization).getBody();
+        Claims claims = parseClaims(authorization);
         boolean isAdmin = claims.get("isAdmin", Boolean.class);
-        return (validateUser(request) && isAdmin);
+        return isDateValid(claims) && isAdmin;
     }
 
     private String getAuthorization(HttpServletRequest request) {
@@ -67,37 +67,32 @@ public class JwtService {
 
         String authorization = null;
 
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("Authorization")) {
-                    authorization = cookie.getValue();
-                }
+        if (cookies == null) {
+            System.out.println("No Cookies Found");
+            return null;
+        }
+
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("Authorization")) {
+                authorization = cookie.getValue();
             }
-            if (authorization == null) {
-                System.out.println("No authorization");
-            }
-        } else {
-            System.out.println("No cookies found");
+        }
+        if (authorization == null) {
+            System.out.println("No authorization");
         }
 
         return authorization;
     }
 
-    private boolean isDateValid(String authorization) {
+    private boolean isDateValid(Claims claims) {
 
         Date now = new Date(System.currentTimeMillis());
 
         try {
 
-            Date expiration = Jwts.parser().setSigningKey(secret).parseClaimsJws(authorization).getBody().getExpiration();
+            Date expiration = claims.getExpiration();
             if (expiration.before(now)) {
                 System.out.println("Token expired");
-                return false;
-            }
-
-            Date issuedAt = Jwts.parser().setSigningKey(secret).parseClaimsJws(authorization).getBody().getIssuedAt();
-            if (issuedAt.after(expiration) || issuedAt.after(now)) {
-                System.out.println("iat claim is after expiration or current timestamp");
                 return false;
             }
 
@@ -107,5 +102,9 @@ public class JwtService {
         }
 
         return true;
+    }
+
+    private Claims parseClaims(String authorization) {
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(authorization).getBody();
     }
 }
