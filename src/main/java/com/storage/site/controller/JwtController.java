@@ -63,7 +63,7 @@ public class JwtController {
             String token = jwtService.generateToken(customer);
             System.out.println("Issuing JWT: " + token);
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Set-Cookie", "Authorization=" + token);
+            headers.add("Set-Cookie", "Authorization=" + token + "; Path=/");
             return new ResponseEntity<>(headers, HttpStatus.OK);
         }
 
