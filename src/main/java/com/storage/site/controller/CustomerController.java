@@ -62,7 +62,7 @@ public class CustomerController {
 
             customerService.save(newCustomer);
 
-            String token = jwtService.generateToken(customer);
+            String token = jwtService.generateToken(newCustomer);
             System.out.println("Issuing JWT: " + token);
 
             headers.add("Set-Cookie", "Authorization=" + token + "; Path=/");
