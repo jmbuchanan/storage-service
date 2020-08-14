@@ -1,15 +1,14 @@
 package com.storage.site.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class Customer {
 
-    private long id;
+    private short id;
+    private String stripeId;
     private String email;
     private String password;
     private String phoneNumber;
@@ -25,10 +24,11 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(long id, String email, String password, String phoneNumber, String firstName, String lastName,
+    public Customer(short id, String stripeId, String email, String password, String phoneNumber, String firstName, String lastName,
                     String streetAddress, String secondStreetAddress, String city, State state, String zip, boolean isAdmin
         ) {
         this.id = id;
+        this.stripeId = stripeId;
         this.email = email.toLowerCase();
         this.password = password;
         this.phoneNumber = phoneNumber;
@@ -48,7 +48,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        if (id == 0L) {
+        if (id == 0) {
             return "Empty Customer Object";
         } else {
             return firstName + " " + lastName;

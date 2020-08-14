@@ -20,6 +20,7 @@ END $$;
 
 CREATE TABLE IF NOT EXISTS customers (
     id serial PRIMARY KEY,
+    stripe_id varchar(100) UNIQUE,
     email varchar(100) NOT NULL UNIQUE,
     password varchar(100) NOT NULL,
     phone_number varchar(20),
@@ -52,5 +53,14 @@ CREATE TABLE IF NOT EXISTS transactions (
     amount numeric(10, 2),
     customer_id integer references customers(id),
     unit_id integer references units(id)
+);
+
+CREATE TABLE IF NOT EXISTS payment_methods (
+    id serial PRIMARY KEY,
+    stripe_id varchar(255),
+    card_brand varchar(20),
+    date_added date,
+    last_four varchar(4),
+    customer_id integer references customers(id)
 );
 

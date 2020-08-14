@@ -2,12 +2,17 @@ package com.storage.site.service;
 
 import com.storage.site.model.Customer;
 import com.storage.site.model.rowmapper.CustomerRowMapper;
+import com.stripe.exception.StripeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CustomerService {
@@ -17,6 +22,9 @@ public class CustomerService {
 
     @Autowired
     private CustomerRowMapper customerRowMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<Customer> getAllCustomers() {
 
@@ -40,13 +48,14 @@ public class CustomerService {
         return new Customer();
     }
 
-    public boolean save(Customer customer) {
+    public void save(Customer customer) {
 
         jdbcTemplate.update(
             "INSERT INTO "
-            + "customers(email, password, phone_number, first_name, last_name, "
+            + "customers(stripe_id, email, password, phone_number, first_name, last_name, "
             + "  street_address, second_street_address, city, state, zip, is_admin) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, CAST(? as state_type), ?, ?)",
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CAST(? as state_type), ?, ?)",
+            customer.getStripeId(),
             customer.getEmail(),
             customer.getPassword(),
             customer.getPhoneNumber(),
@@ -59,7 +68,35 @@ public class CustomerService {
             customer.getZip(),
             false
         );
+    }
 
-        return true;
+    public Customer createCustomerFromRequest(HttpServletRequest request) {
+
+        Map<String, Object> customerParams = new HashMap<>();
+        customerParams.put("email", request.getParameter("email"));
+        com.stripe.model.Customer stripeCustomer = null;
+        String stripeCustomerId = null;
+        try {
+            stripeCustomer = com.stripe.model.Customer.create(customerParams);
+            stripeCustomerId = stripeCustomer.getId();
+        } catch (StripeException e) {
+            e.getMessage();
+        }
+
+        Customer customer = new Customer();
+
+        customer.setEmail(request.getParameter("email"));
+        customer.setStripeId(stripeCustomerId);
+        customer.setPassword(passwordEncoder.encode(request.getParameter("password")));
+        customer.setFirstName(request.getParameter("firstName"));
+        customer.setLastName(request.getParameter("lastName"));
+        customer.setPhoneNumber(request.getParameter("phoneNumber"));
+        customer.setStreetAddress(request.getParameter("streetAddress"));
+        customer.setSecondStreetAddress(request.getParameter("secondStreetAddress"));
+        customer.setCity(request.getParameter("city"));
+        customer.setState(Customer.State.valueOf(request.getParameter("state")));
+        customer.setZip(request.getParameter("zip"));
+
+        return customer;
     }
 }

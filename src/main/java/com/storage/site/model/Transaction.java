@@ -16,8 +16,8 @@ public class Transaction {
     private Type type;
     private Date date;
     private BigDecimal amount;
-    private short customer_id; // up to 32,767
-    private byte unit_id;  // up to 128
+    private short customerId; // up to 32,767
+    private byte unitId;  // up to 128
 
 
     public enum Type {

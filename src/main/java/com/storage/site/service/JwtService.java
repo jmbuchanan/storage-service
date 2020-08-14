@@ -33,11 +33,33 @@ public class JwtService {
         return jwt;
     }
 
+    public short parseCustomerId(HttpServletRequest request) {
+        String authorization = getAuthorization(request);
+        int customerId;
+
+        if (authorization == null) {
+            return 0;
+        } else {
+            Claims claims = parseClaims(authorization);
+            try {
+                customerId = (short)(int) claims.get("customerId");
+            } catch (Exception e) {
+                System.out.println("Issue parsing customerId from jwt provided");
+                return 0;
+            }
+                return (short) customerId;
+        }
+    }
+
     private Map<String, Object> makeClaimsFrom(Customer customer) {
         Map<String, Object> claims = new HashMap<>();
 
-        claims.put("isAdmin", customer.isAdmin());
+        claims.put("customerId", customer.getId());
+        if (customer.getStripeId() != null) {
+            claims.put("customerStripeId", customer.getStripeId());
+        }
         claims.put("firstName", customer.getFirstName());
+        claims.put("isAdmin", customer.isAdmin());
 
         return claims;
     }

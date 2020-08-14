@@ -16,11 +16,11 @@ import java.util.Date;
 @Setter
 public class Unit {
 
-    private long unitNumber;
+    private byte unitNumber;
     private boolean isLarge;
     private boolean isOccupied;
     private boolean isDelinquent;
-    private long daysDelinquent;
+    private short daysDelinquent;
     private Date startDate;
 
 }

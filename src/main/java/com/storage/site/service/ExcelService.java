@@ -145,8 +145,8 @@ public class ExcelService {
             row.createCell(1).setCellValue(transactions.get(i).getType().toString());
             row.createCell(2).setCellValue(transactions.get(i).getDate());
             row.createCell(3).setCellValue(transactions.get(i).getAmount().toString());
-            row.createCell(4).setCellValue(transactions.get(i).getCustomer_id());
-            row.createCell(5).setCellValue(transactions.get(i).getUnit_id());
+            row.createCell(4).setCellValue(transactions.get(i).getCustomerId());
+            row.createCell(5).setCellValue(transactions.get(i).getUnitId());
         }
 
         //Autosize Columns

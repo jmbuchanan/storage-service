@@ -4,6 +4,7 @@ import com.storage.site.model.Customer;
 import com.storage.site.service.CustomerService;
 import com.storage.site.service.ExcelService;
 import com.storage.site.service.JwtService;
+import com.stripe.exception.StripeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,8 +31,6 @@ public class CustomerController {
     @Autowired
     JwtService jwtService;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     @GetMapping("/getAllCustomers")
     public List<Customer> getAllCustomers() {
@@ -54,15 +53,18 @@ public class CustomerController {
 
         if (isExistingCustomer(customer)) {
 
-            return new ResponseEntity<String>("Account Exists", headers, HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Account Exists", headers, HttpStatus.CONFLICT);
 
         } else {
 
-            Customer newCustomer = buildNewCustomer(request);
+            customer = customerService.createCustomerFromRequest(request);
 
-            customerService.save(newCustomer);
+            customerService.save(customer);
 
-            String token = jwtService.generateToken(newCustomer);
+            //query the saved record because it includes the generated customer Id
+            customer = customerService.getCustomerByEmail(customer.getEmail());
+
+            String token = jwtService.generateToken(customer);
             System.out.println("Issuing JWT: " + token);
 
             headers.add("Set-Cookie", "Authorization=" + token + "; Path=/");
@@ -72,27 +74,8 @@ public class CustomerController {
     }
 
     private boolean isExistingCustomer(Customer customer) {
-
         return customer.getId() != 0L;
-
     }
 
-    private Customer buildNewCustomer(HttpServletRequest request) {
-
-        Customer customer = new Customer();
-
-        customer.setEmail(request.getParameter("email"));
-        customer.setPassword(passwordEncoder.encode(request.getParameter("password")));
-        customer.setFirstName(request.getParameter("firstName"));
-        customer.setLastName(request.getParameter("lastName"));
-        customer.setPhoneNumber(request.getParameter("phoneNumber"));
-        customer.setStreetAddress(request.getParameter("streetAddress"));
-        customer.setSecondStreetAddress(request.getParameter("secondStreetAddress"));
-        customer.setCity(request.getParameter("city"));
-        customer.setState(Customer.State.valueOf(request.getParameter("state")));
-        customer.setZip(request.getParameter("zip"));
-
-        return customer;
-    }
 }
 

@@ -13,11 +13,11 @@ public class UnitRowMapper implements RowMapper<Unit> {
     @Override
     public Unit mapRow(ResultSet rs, int rowNumber) throws SQLException {
         return new Unit(
-                rs.getLong("id"),
+                rs.getByte("id"),
                 rs.getBoolean("is_large"),
                 rs.getBoolean("is_occupied"),
                 rs.getBoolean("is_delinquent"),
-                rs.getLong("days_delinquent"),
+                rs.getShort("days_delinquent"),
                 rs.getDate("start_date")
         );
     }

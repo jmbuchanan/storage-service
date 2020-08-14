@@ -17,7 +17,8 @@ public class CustomerTest {
     @Test
     public void testEmailFromConstructorIsLowercase() {
         Customer customer = new Customer(
-                1L,
+                (short) 1,
+                "ImmaStripeCustomerId",
                 "COOL_KID@GMAIL.BIZ",
                 "pass",
                 "phone",
