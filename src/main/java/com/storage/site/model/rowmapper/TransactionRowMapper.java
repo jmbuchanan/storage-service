@@ -18,8 +18,8 @@ public class TransactionRowMapper implements RowMapper<Transaction> {
                 Transaction.Type.valueOf(rs.getString("type").toUpperCase()),
                 rs.getDate("date"),
                 rs.getBigDecimal("amount"),
-                rs.getShort("customer_id"),
-                rs.getByte("unit_id")
+                rs.getInt("customer_id"),
+                rs.getInt("unit_id")
         );
 
     }

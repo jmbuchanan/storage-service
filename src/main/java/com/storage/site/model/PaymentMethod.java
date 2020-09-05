@@ -19,7 +19,7 @@ public class PaymentMethod {
     private String cardBrand;
     private Date dateAdded;
     private String lastFour;
-    private short customerId; // up to 32,767
+    private int customerId;
 
         @Override
         //example: Visa ending in 4229 belonging to customer 3.

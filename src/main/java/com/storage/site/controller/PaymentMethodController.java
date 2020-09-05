@@ -26,7 +26,7 @@ public class PaymentMethodController {
     @GetMapping("/fetchByCustomerId")
     public List<PaymentMethod> fetchByCustomerId(HttpServletRequest request) {
 
-        short customerId = jwtService.parseCustomerId(request);
+        int customerId = jwtService.parseCustomerId(request);
 
         if (customerId != 0) {
             return paymentMethodService.getPaymentMethodsByCustomerId(customerId);

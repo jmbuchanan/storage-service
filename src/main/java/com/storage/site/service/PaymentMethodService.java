@@ -19,7 +19,7 @@ public class PaymentMethodService {
     @Autowired
     private PaymentMethodRowMapper paymentMethodRowMapper;
 
-    public List<PaymentMethod> getPaymentMethodsByCustomerId(short customerId) {
+    public List<PaymentMethod> getPaymentMethodsByCustomerId(int customerId) {
 
         Object [] sqlParam = {customerId};
 

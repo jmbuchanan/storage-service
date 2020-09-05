@@ -19,7 +19,7 @@ public class PaymentMethodRowMapper implements RowMapper<PaymentMethod> {
                 rs.getString("card_brand"),
                 rs.getDate("date_added"),
                 rs.getString("last_four"),
-                rs.getShort("customer_id")
+                rs.getInt("customer_id")
         );
 
     }

@@ -17,7 +17,7 @@ public class CustomerTest {
     @Test
     public void testEmailFromConstructorIsLowercase() {
         Customer customer = new Customer(
-                (short) 1,
+                1,
                 "ImmaStripeCustomerId",
                 "COOL_KID@GMAIL.BIZ",
                 "pass",
@@ -38,7 +38,7 @@ public class CustomerTest {
     @Test
     public void testEmptyCustomerIdIsZero() {
         Customer customer = new Customer();
-        assertEquals(customer.getId(), 0L);
+        assertEquals(customer.getId(), 0);
     }
 
     @Test

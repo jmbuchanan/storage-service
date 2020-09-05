@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class Customer {
 
-    private short id;
+    private int id;
     private String stripeId;
     private String email;
     private String password;
@@ -24,7 +24,7 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(short id, String stripeId, String email, String password, String phoneNumber, String firstName, String lastName,
+    public Customer(int id, String stripeId, String email, String password, String phoneNumber, String firstName, String lastName,
                     String streetAddress, String secondStreetAddress, String city, State state, String zip, boolean isAdmin
         ) {
         this.id = id;

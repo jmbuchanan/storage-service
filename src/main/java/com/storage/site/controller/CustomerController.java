@@ -61,7 +61,7 @@ public class CustomerController {
 
             customerService.save(customer);
 
-            //query the saved record because it includes the generated customer Id
+            //query the saved record because it includes the db-generated customer Id
             customer = customerService.getCustomerByEmail(customer.getEmail());
 
             String token = jwtService.generateToken(customer);

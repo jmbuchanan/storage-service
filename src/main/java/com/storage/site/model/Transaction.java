@@ -12,12 +12,12 @@ import java.util.Date;
 @Setter
 public class Transaction {
 
-    private int id;  // up to 2,147,483,648
+    private int id;
     private Type type;
     private Date date;
     private BigDecimal amount;
-    private short customerId; // up to 32,767
-    private byte unitId;  // up to 128
+    private int customerId;
+    private int unitId;
 
 
     public enum Type {

@@ -33,7 +33,7 @@ public class JwtService {
         return jwt;
     }
 
-    public short parseCustomerId(HttpServletRequest request) {
+    public int parseCustomerId(HttpServletRequest request) {
         String authorization = getAuthorization(request);
         int customerId;
 
@@ -42,12 +42,12 @@ public class JwtService {
         } else {
             Claims claims = parseClaims(authorization);
             try {
-                customerId = (short)(int) claims.get("customerId");
+                customerId = (int) claims.get("customerId");
             } catch (Exception e) {
                 System.out.println("Issue parsing customerId from jwt provided");
                 return 0;
             }
-                return (short) customerId;
+                return customerId;
         }
     }
 
