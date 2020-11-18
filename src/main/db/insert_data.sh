@@ -1,3 +1,3 @@
 #!/bin/bash
 
-psql -U ${POSTGRES_USER} -d storage_site -f data.sql
+sqlite3 ../../../storage_site.db < data.sql

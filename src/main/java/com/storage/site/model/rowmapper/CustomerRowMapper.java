@@ -27,7 +27,7 @@ public class CustomerRowMapper implements RowMapper<Customer> {
                 rs.getString("city"),
                 Customer.State.valueOf(rs.getString("state").toUpperCase()),
                 rs.getString("zip"),
-                rs.getBoolean("is_admin")
+                (rs.getInt("is_admin") == 1)
         );
     }
 }

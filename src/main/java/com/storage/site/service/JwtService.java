@@ -22,6 +22,8 @@ public class JwtService {
 
         Map<String, Object> claims = makeClaimsFrom(customer);
 
+        System.out.println(customer);
+
         String jwt = Jwts.builder()
                 .setSubject(customer.getEmail())
                 .setClaims(claims)
