@@ -4,6 +4,7 @@ import com.storage.site.model.Customer;
 import com.storage.site.model.rowmapper.CustomerRowMapper;
 import com.storage.site.util.DateUtil;
 import com.stripe.exception.StripeException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class CustomerService {
 
@@ -38,9 +40,10 @@ public class CustomerService {
     public Customer getCustomerByEmail(String email) {
 
         Object [] sqlParam = {email.toLowerCase()};
+        String sql = "SELECT * FROM customers WHERE email LIKE ?;";
 
         try {
-            Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE email LIKE ?", sqlParam, customerRowMapper);
+            Customer customer = jdbcTemplate.queryForObject(sql, sqlParam, customerRowMapper);
             return customer;
 
         } catch (EmptyResultDataAccessException e) {

@@ -1,5 +1,6 @@
 package com.storage.site.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -9,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
 
+@Slf4j
 @Component
 public class DateUtil {
 
@@ -24,7 +26,7 @@ public class DateUtil {
         try {
             date = formatter.parse(dateStr);
         } catch (ParseException e) {
-            System.out.println("Could not parse date");
+            log.warn("Could not parse date");
             return null;
         }
         return date;

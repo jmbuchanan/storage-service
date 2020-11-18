@@ -26,7 +26,7 @@ public class PaymentMethodRowMapper implements RowMapper<PaymentMethod> {
                 rs.getInt("id"),
                 rs.getString("stripe_id"),
                 rs.getString("card_brand"),
-                DateUtil.stringToDate("date_added"),
+                DateUtil.stringToDate(rs.getString("date_added")),
                 rs.getString("last_four"),
                 rs.getInt("customer_id")
         );

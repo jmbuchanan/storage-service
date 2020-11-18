@@ -21,8 +21,6 @@ cors:
 
 logging:
   level:
-    org:
-      springframework:
-        jdbc:
-          core:
-            JdbcTemplate: DEBUG
+    com:
+      zaxxer:
+        hikari: WARN

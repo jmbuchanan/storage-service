@@ -3,6 +3,7 @@ package com.storage.site.controller;
 import com.storage.site.model.PaymentMethod;
 import com.storage.site.service.JwtService;
 import com.storage.site.service.PaymentMethodService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/paymentMethods")
 public class PaymentMethodController {
@@ -26,6 +28,7 @@ public class PaymentMethodController {
     @GetMapping("/fetchByCustomerId")
     public List<PaymentMethod> fetchByCustomerId(HttpServletRequest request) {
 
+        log.info("fetching cards by customer id");
         int customerId = jwtService.parseCustomerId(request);
 
         if (customerId != 0) {
