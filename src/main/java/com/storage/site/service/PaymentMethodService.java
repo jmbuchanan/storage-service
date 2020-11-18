@@ -2,6 +2,7 @@ package com.storage.site.service;
 
 import com.storage.site.model.PaymentMethod;
 import com.storage.site.model.rowmapper.PaymentMethodRowMapper;
+import com.storage.site.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -39,7 +40,7 @@ public class PaymentMethodService {
                 + "  VALUES(?, ?, ?, ?, ?)",
                 paymentMethod.getStripeId(),
                 paymentMethod.getCardBrand(),
-                paymentMethod.getDateAdded(),
+                DateUtil.dateToString(paymentMethod.getDateAdded()),
                 paymentMethod.getLastFour(),
                 paymentMethod.getCustomerId()
         );

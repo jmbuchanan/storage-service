@@ -12,7 +12,7 @@ import java.util.TimeZone;
 @Component
 public class DateUtil {
 
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy hh:mm:ss a", Locale.ENGLISH);
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
 
     @PostConstruct
     private void setTimeZone() {
@@ -31,7 +31,7 @@ public class DateUtil {
     }
 
     public static String dateToString(Date date) {
-        return "Not implemented";
+        return formatter.format(date);
     }
 
 }

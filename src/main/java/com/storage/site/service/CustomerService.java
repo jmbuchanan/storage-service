@@ -2,6 +2,7 @@ package com.storage.site.service;
 
 import com.storage.site.model.Customer;
 import com.storage.site.model.rowmapper.CustomerRowMapper;
+import com.storage.site.util.DateUtil;
 import com.stripe.exception.StripeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,8 +55,8 @@ public class CustomerService {
         jdbcTemplate.update(
             "INSERT INTO "
             + "customers(stripe_id, email, password, phone_number, first_name, last_name, "
-            + "  street_address, second_street_address, city, state, zip, is_admin) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CAST(? as state_type), ?, ?)",
+            + "  street_address, second_street_address, city, state, zip, date_joined, is_admin) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             customer.getStripeId(),
             customer.getEmail(),
             customer.getPassword(),
@@ -66,6 +68,7 @@ public class CustomerService {
             customer.getCity(),
             customer.getState().toString(),
             customer.getZip(),
+            DateUtil.dateToString(customer.getDateJoined()),
             false
         );
     }
@@ -96,6 +99,7 @@ public class CustomerService {
         customer.setCity(request.getParameter("city"));
         customer.setState(Customer.State.valueOf(request.getParameter("state")));
         customer.setZip(request.getParameter("zip"));
+        customer.setDateJoined(new Date());
 
         return customer;
     }
