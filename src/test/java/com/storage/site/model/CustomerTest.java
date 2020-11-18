@@ -2,6 +2,8 @@ package com.storage.site.model;
 
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.junit.Assert.*;
 
 public class CustomerTest {
@@ -29,6 +31,7 @@ public class CustomerTest {
                 "city",
                 Customer.State.GA,
                 "zip",
+                new Date(),
                 false
         );
 

@@ -3,6 +3,8 @@ package com.storage.site.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 public class Customer {
@@ -19,13 +21,14 @@ public class Customer {
     private String city;
     private State state;
     private String zip;
+    private Date dateJoined;
     private boolean isAdmin;
 
     public Customer() {
     }
 
     public Customer(int id, String stripeId, String email, String password, String phoneNumber, String firstName, String lastName,
-                    String streetAddress, String secondStreetAddress, String city, State state, String zip, boolean isAdmin
+                    String streetAddress, String secondStreetAddress, String city, State state, String zip, Date dateJoined, boolean isAdmin
         ) {
         this.id = id;
         this.stripeId = stripeId;
@@ -39,6 +42,7 @@ public class Customer {
         this.city = city;
         this.state = state;
         this.zip = zip;
+        this.dateJoined = dateJoined;
         this.isAdmin = isAdmin;
     }
 

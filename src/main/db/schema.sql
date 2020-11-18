@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS customers (
     state TEXT,
     zip TEXT,
     country TEXT,
+    date_joined TEXT,
     is_admin NUMERIC,
     FOREIGN KEY(state) REFERENCES states(state)
 );
@@ -35,7 +36,7 @@ CREATE TABLE IF NOT EXISTS units (
     is_occupied NUMERIC,
     is_delinquent NUMERIC,
     days_delinquent NUMERIC,
-    start_date NUMERIC,
+    start_date TEXT,
     customer_id INTEGER,
     FOREIGN KEY(customer_id) REFERENCES customers(id)
 );
@@ -44,7 +45,7 @@ CREATE TABLE IF NOT EXISTS units (
 CREATE TABLE IF NOT EXISTS transactions (
     id INTEGER PRIMARY KEY,
     type TEXT,
-    date NUMERIC,
+    date TEXT,
     amount FLOAT,
     customer_id INTEGER,
     unit_id INTEGER,
@@ -56,7 +57,7 @@ CREATE TABLE IF NOT EXISTS payment_methods (
     id INTEGER PRIMARY KEY,
     stripe_id TEXT,
     card_brand TEXT,
-    date_added NUMERIC,
+    date_added TEXT,
     last_four TEXT,
     customer_id INTEGER,
     FOREIGN KEY(customer_id) REFERENCES customers(id)

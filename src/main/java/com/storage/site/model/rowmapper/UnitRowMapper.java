@@ -14,9 +14,9 @@ public class UnitRowMapper implements RowMapper<Unit> {
     public Unit mapRow(ResultSet rs, int rowNumber) throws SQLException {
         return new Unit(
                 rs.getInt("id"),
-                rs.getBoolean("is_large"),
-                rs.getBoolean("is_occupied"),
-                rs.getBoolean("is_delinquent"),
+                rs.getInt("is_large") == 1,
+                rs.getInt("is_occupied") == 1,
+                rs.getInt("is_delinquent") == 1,
                 rs.getInt("days_delinquent"),
                 rs.getDate("start_date")
         );
