@@ -32,7 +32,7 @@ public class JwtController {
     public ResponseEntity<String> authenticate(HttpServletRequest request) {
         // The jwt filter intercepts the request and evaluates
         // before this method returns
-        log.info("Authenticate endpoint");
+        log.info("Preflight request authorized");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

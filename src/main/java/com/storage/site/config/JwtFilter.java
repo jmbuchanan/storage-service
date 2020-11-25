@@ -45,6 +45,8 @@ public class JwtFilter extends OncePerRequestFilter {
         if (customerIsAuthorizedToAccessResource) {
             chain.doFilter(request, response);
         } else {
+            log.info("Request not authorized");
+            log.info(String.format("REQUEST END: %s >>>", uuid));
             response.setStatus(403);
         }
     }
