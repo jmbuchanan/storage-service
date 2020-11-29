@@ -26,6 +26,6 @@ public class PaymentMethod {
         public String toString() {
             return StringUtils.capitalize(cardBrand) +
                     " ending in " + lastFour +
-                    " belonging to customer " + String.valueOf(customerId) + ".";
+                    " belonging to customer " + customerId + ".";
         }
 }

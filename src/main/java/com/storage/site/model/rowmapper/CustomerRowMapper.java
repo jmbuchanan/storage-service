@@ -1,7 +1,6 @@
 package com.storage.site.model.rowmapper;
 
 import com.storage.site.model.Customer;
-import com.storage.site.model.Transaction;
 import com.storage.site.util.DateUtil;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;

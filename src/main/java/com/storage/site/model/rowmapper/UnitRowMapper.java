@@ -1,6 +1,7 @@
 package com.storage.site.model.rowmapper;
 
 import com.storage.site.model.Unit;
+import com.storage.site.util.DateUtil;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,7 @@ public class UnitRowMapper implements RowMapper<Unit> {
                 rs.getInt("is_occupied") == 1,
                 rs.getInt("is_delinquent") == 1,
                 rs.getInt("days_delinquent"),
-                rs.getDate("start_date")
+                DateUtil.stringToDate(rs.getString("start_date"))
         );
     }
 }
