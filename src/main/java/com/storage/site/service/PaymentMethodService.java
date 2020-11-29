@@ -46,4 +46,11 @@ public class PaymentMethodService {
         );
     }
 
+    public boolean delete(Long id) {
+        String sql = "DELETE FROM payment_methods WHERE id = ?";
+        Object[] args = new Object[] {id};
+
+        return jdbcTemplate.update(sql, args) == 1;
+    }
+
 }
