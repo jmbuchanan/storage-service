@@ -1,6 +1,6 @@
 package com.storage.site.controller;
 
-import com.storage.site.model.BookRequest;
+import com.storage.site.dto.BookRequest;
 import com.storage.site.model.Unit;
 import com.storage.site.service.ExcelService;
 import com.storage.site.service.UnitService;

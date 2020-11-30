@@ -4,19 +4,13 @@ import com.storage.site.model.Customer;
 import com.storage.site.service.CustomerService;
 import com.storage.site.service.ExcelService;
 import com.storage.site.service.JwtService;
-import com.stripe.exception.StripeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -45,12 +39,11 @@ public class CustomerController {
     }
 
     @PostMapping("/addCustomer")
-    public ResponseEntity<String> addCustomer(HttpServletRequest request) {
+    public ResponseEntity<String> addCustomer(@RequestBody Customer customerRequest) {
 
-        String email = request.getParameter("email");
-        log.info(String.format("Register account request for e-mail \'%s\'", email));
+        log.info(String.format("Register account request for e-mail \'%s\'", customerRequest.getEmail()));
 
-        Customer customer = customerService.getCustomerByEmail(email);
+        Customer customer = customerService.getCustomerByEmail(customerRequest.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -59,18 +52,11 @@ public class CustomerController {
             return new ResponseEntity<>("Account Exists", headers, HttpStatus.CONFLICT);
 
         } else {
-
             log.info("Verified this is not an existing customer. Creating record in database");
-            customer = customerService.createCustomerFromRequest(request);
-
-            log.info("Querying record to return database generated customer ID");
-            customerService.save(customer);
-
-            //query the saved record because it includes the db-generated customer Id
-            customer = customerService.getCustomerByEmail(customer.getEmail());
+            log.info(customerRequest.getPassword());
+            customer = customerService.register(customerRequest);
 
             String token = jwtService.generateToken(customer);
-
             headers.add("Set-Cookie", "Authorization=" + token + "; Path=/");
 
             return new ResponseEntity<>(headers, HttpStatus.OK);

@@ -1,4 +1,4 @@
-package com.storage.site.model;
+package com.storage.site.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

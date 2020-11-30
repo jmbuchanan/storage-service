@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -76,10 +75,10 @@ public class CustomerService {
         );
     }
 
-    public Customer createCustomerFromRequest(HttpServletRequest request) {
+    public Customer register(Customer customer) {
 
         Map<String, Object> customerParams = new HashMap<>();
-        customerParams.put("email", request.getParameter("email"));
+        customerParams.put("email", customer.getEmail());
         com.stripe.model.Customer stripeCustomer = null;
         String stripeCustomerId = null;
         try {
@@ -89,21 +88,16 @@ public class CustomerService {
             e.getMessage();
         }
 
-        Customer customer = new Customer();
-
-        customer.setEmail(request.getParameter("email"));
         customer.setStripeId(stripeCustomerId);
-        customer.setPassword(passwordEncoder.encode(request.getParameter("password")));
-        customer.setFirstName(request.getParameter("firstName"));
-        customer.setLastName(request.getParameter("lastName"));
-        customer.setPhoneNumber(request.getParameter("phoneNumber"));
-        customer.setStreetAddress(request.getParameter("streetAddress"));
-        customer.setSecondStreetAddress(request.getParameter("secondStreetAddress"));
-        customer.setCity(request.getParameter("city"));
-        customer.setState(Customer.State.valueOf(request.getParameter("state")));
-        customer.setZip(request.getParameter("zip"));
+        //call setter method to sanitize email
+        customer.setEmail(customer.getEmail());
+        //call setter method to hash password
+        customer.setPassword(customer.getPassword());
         customer.setDateJoined(new Date());
 
-        return customer;
+        save(customer);
+
+        log.info("Querying record to return database generated customer ID");
+        return getCustomerByEmail(customer.getEmail());
     }
 }

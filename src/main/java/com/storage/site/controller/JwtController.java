@@ -1,5 +1,6 @@
 package com.storage.site.controller;
 
+import com.storage.site.dto.LoginRequest;
 import com.storage.site.model.Customer;
 import com.storage.site.service.CustomerService;
 import com.storage.site.service.JwtService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +40,10 @@ public class JwtController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> createAuthenticationToken(HttpServletRequest request) {
+    public ResponseEntity<String> createAuthenticationToken(@RequestBody Customer loginRequest) {
 
-        String email = request.getParameter("email");
-        String providedPassword = request.getParameter("password");
+        String email = loginRequest.getEmail();
+        String providedPassword = loginRequest.getPassword();
 
         log.info(String.format("Client sending request to log in as \'%s\'", email));
 

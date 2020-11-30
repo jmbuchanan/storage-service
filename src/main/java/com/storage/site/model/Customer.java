@@ -1,10 +1,16 @@
 package com.storage.site.model;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
+@Slf4j
 @Getter
 @Setter
 public class Customer {
@@ -24,6 +30,8 @@ public class Customer {
     private Date dateJoined;
     private boolean isAdmin;
 
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public Customer() {
     }
 
@@ -32,7 +40,7 @@ public class Customer {
         ) {
         this.id = id;
         this.stripeId = stripeId;
-        this.email = email.toLowerCase();
+        this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
@@ -44,10 +52,15 @@ public class Customer {
         this.zip = zip;
         this.dateJoined = dateJoined;
         this.isAdmin = isAdmin;
+
     }
 
     public void setEmail(String email) {
         this.email = email.toLowerCase();
+    }
+
+    public void setPassword(String password) {
+        this.password = passwordEncoder.encode(password);
     }
 
     @Override
