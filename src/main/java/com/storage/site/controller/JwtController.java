@@ -1,6 +1,5 @@
 package com.storage.site.controller;
 
-import com.storage.site.dto.LoginRequest;
 import com.storage.site.model.Customer;
 import com.storage.site.service.CustomerService;
 import com.storage.site.service.JwtService;
