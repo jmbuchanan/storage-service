@@ -14,14 +14,9 @@ import java.util.TimeZone;
 @Component
 public class DateUtil {
 
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
-
-    @PostConstruct
-    private void setTimeZone() {
-        formatter.setTimeZone(TimeZone.getTimeZone("America/New_York"));
-    }
-
     public static Date stringToDate(String dateStr) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        formatter.setTimeZone(TimeZone.getTimeZone("America/New_York"));
         Date date;
         try {
             date = formatter.parse(dateStr);
@@ -33,7 +28,8 @@ public class DateUtil {
     }
 
     public static String dateToString(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        formatter.setTimeZone(TimeZone.getTimeZone("America/New_York"));
         return formatter.format(date);
     }
-
 }

@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class PaymentMethodController {
     @PostMapping("/addPaymentMethod")
     public ResponseEntity<String> addPaymentMethod(@RequestBody PaymentMethod paymentMethod) {
 
-        paymentMethod.setDateAdded(new Date(System.currentTimeMillis()));
+        paymentMethod.setDateAdded(new Date());
 
         paymentMethodService.save(paymentMethod);
 
