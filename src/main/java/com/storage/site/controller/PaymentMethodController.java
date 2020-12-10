@@ -27,10 +27,7 @@ public class PaymentMethodController {
 
     @GetMapping("/fetchByCustomerId")
     public List<PaymentMethod> fetchByCustomerId(HttpServletRequest request) {
-
-        log.info("fetching cards by customer id");
         int customerId = jwtService.parseCustomerId(request);
-
         if (customerId != 0) {
             return paymentMethodService.getPaymentMethodsByCustomerId(customerId);
         } else {
