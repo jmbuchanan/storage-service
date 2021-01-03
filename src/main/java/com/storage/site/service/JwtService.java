@@ -98,7 +98,6 @@ public class JwtService {
             return false;
         }
         if (cachedUserTokens.containsKey(authorization)) {
-            log.info("User token found in cache");
             return true;
         }
 
@@ -119,7 +118,6 @@ public class JwtService {
         }
 
         if (cachedAdminTokens.containsKey(authorization)) {
-            log.info("Admin token found in cache");
             return true;
         }
 
