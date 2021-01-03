@@ -40,7 +40,7 @@ public class PaymentMethodService {
                 + "  VALUES(?, ?, ?, ?, ?)",
                 paymentMethod.getStripeId(),
                 paymentMethod.getCardBrand(),
-                DateUtil.dateToString(paymentMethod.getDateAdded()),
+                paymentMethod.getDateAdded(),
                 paymentMethod.getLastFour(),
                 paymentMethod.getCustomerId()
         );

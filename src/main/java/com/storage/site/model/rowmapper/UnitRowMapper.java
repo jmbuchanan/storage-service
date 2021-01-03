@@ -16,21 +16,14 @@ public class UnitRowMapper implements RowMapper<Unit> {
 
     @Override
     public Unit mapRow(ResultSet rs, int rowNumber) throws SQLException {
-        String dateStr = rs.getString("start_date");
-        Date date;
-        if (dateStr != null) {
-            date = DateUtil.stringToDate(rs.getString("start_date"));
-        } else {
-            date = new Date();
-        }
 
         return new Unit(
                 rs.getInt("id"),
-                rs.getInt("is_large") == 1,
-                rs.getInt("is_occupied") == 1,
-                rs.getInt("is_delinquent") == 1,
+                rs.getBoolean("is_large"),
+                rs.getBoolean("is_occupied"),
+                rs.getBoolean("is_delinquent"),
                 rs.getInt("days_delinquent"),
-                date
+                rs.getDate("start_date")
         );
     }
 }

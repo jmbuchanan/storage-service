@@ -1,7 +1,6 @@
 package com.storage.site.model.rowmapper;
 
 import com.storage.site.model.Customer;
-import com.storage.site.util.DateUtil;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -27,8 +26,8 @@ public class CustomerRowMapper implements RowMapper<Customer> {
                 rs.getString("city"),
                 Customer.State.valueOf(rs.getString("state").toUpperCase()),
                 rs.getString("zip"),
-                DateUtil.stringToDate(rs.getString("date_joined")),
-                (rs.getInt("is_admin") == 1)
+                rs.getDate("date_joined"),
+                rs.getBoolean("is_admin")
         );
     }
 }

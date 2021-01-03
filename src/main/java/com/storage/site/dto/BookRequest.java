@@ -3,13 +3,14 @@ package com.storage.site.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+
 @AllArgsConstructor
 @Getter
 public class BookRequest {
     private final String unitSize;
     private final String startDate;
-    private final String cardId;
-    private final String customerId;
+    private final int cardId;
+    private final int customerId;
 
     @Override
     public String toString() {

@@ -38,6 +38,16 @@ public class UnitController {
         return excelService.generateUnitWorkbook();
     }
 
+    @PutMapping("/{unitNumber}")
+    public ResponseEntity<String> cancelSubscription(@PathVariable Long unitNumber) {
+        log.info("PUT request received for unit number " + unitNumber);
+        if (unitService.cancelSubscription(unitNumber)) {
+            return new ResponseEntity<>("Resource updated", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Issue updated resource", HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/fetchByCustomerId")
     public List<Unit> fetchByCustomerId(HttpServletRequest request) {
         int customerId = jwtService.parseCustomerId(request);
