@@ -5,8 +5,8 @@ import com.storage.site.model.Unit;
 import com.storage.site.service.ExcelService;
 import com.storage.site.service.JwtService;
 import com.storage.site.service.UnitService;
-import com.stripe.param.OrderCreateParams;
-import com.stripe.param.SubscriptionCreateParams;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Subscription;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -57,13 +57,37 @@ public class UnitController {
     }
 
     @PostMapping("/book")
-    public ResponseEntity<String> bookUnit(@RequestBody BookRequest bookRequest) {
+    public ResponseEntity<String> bookUnit(@RequestBody BookRequest bookRequest) throws StripeException {
         log.info(bookRequest.toString());
         Unit bookedUnit = unitService.bookUnit(bookRequest);
+        Subscription subscription = makeSubscription();
         if (bookedUnit != null) {
             return new ResponseEntity<>("Unit booked", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("No unit available", HttpStatus.CONFLICT);
         }
+    }
+
+    private Subscription makeSubscription() throws StripeException {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+        Date nextMonthFirstDay = calendar.getTime();
+
+        List<Object> items = new ArrayList<>();
+        Map<String, Object> item1 = new HashMap<>();
+        item1.put(
+                "price",
+                "price_1I8y8bBBzZIBZ7GfAOedK0Dk"
+        );
+        items.add(item1);
+        Map<String, Object> params = new HashMap<>();
+        params.put("customer", "cus_IkTnsw6FFLRQLc");
+        params.put("items", items);
+        params.put("default_payment_method", "pm_1I8yqZBBzZIBZ7GfByWaOQPw");
+        params.put("billing_cycle_anchor", nextMonthFirstDay);
+
+        return Subscription.create(params);
     }
 }

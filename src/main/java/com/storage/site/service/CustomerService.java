@@ -35,6 +35,21 @@ public class CustomerService {
         return customers;
     }
 
+    public Customer getCustomerbyId(int id) {
+        Object [] sqlParam = {id};
+        String sql = "SELECT * FROM customers WHERE id = ?;";
+
+        try {
+            Customer customer = jdbcTemplate.queryForObject(sql, sqlParam, customerRowMapper);
+            return customer;
+
+        } catch (EmptyResultDataAccessException e) {
+            e.getMessage();
+        }
+
+        return new Customer();
+    }
+
     public Customer getCustomerByEmail(String email) {
 
         Object [] sqlParam = {email.toLowerCase()};
