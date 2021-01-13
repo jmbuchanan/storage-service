@@ -23,20 +23,9 @@ public class TransactionService {
     @Autowired
     private TransactionRowMapper transactionRowMapper;
 
-    @Value("${stripe.secret}")
-    private String key;
-
-    @PostConstruct
-    private void setStripeKey() {
-        Stripe.apiKey = key;
-    }
-
     public List<Transaction> getAllTransactions() {
-
         List<Transaction> transactions = jdbcTemplate.query("SELECT * FROM transactions", transactionRowMapper);
-
         return transactions;
-
     }
 
     public PaymentIntent collectPayment() throws StripeException {

@@ -19,13 +19,13 @@ import java.util.List;
 public class CustomerController {
 
     @Autowired
-    CustomerService customerService;
+    private CustomerService customerService;
 
     @Autowired
-    ExcelService excelService;
+    private ExcelService excelService;
 
     @Autowired
-    JwtService jwtService;
+    private JwtService jwtService;
 
 
     @GetMapping("/getAllCustomers")
@@ -53,7 +53,6 @@ public class CustomerController {
 
         } else {
             log.info("Verified this is not an existing customer. Creating record in database");
-            log.info(customerRequest.getPassword());
             customer = customerService.register(customerRequest);
 
             String token = jwtService.generateToken(customer);

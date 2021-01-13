@@ -2,7 +2,6 @@ package com.storage.site.service;
 
 import com.storage.site.model.Customer;
 import com.storage.site.model.rowmapper.CustomerRowMapper;
-import com.storage.site.util.DateUtil;
 import com.stripe.exception.StripeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +57,7 @@ public class CustomerService {
             "INSERT INTO "
             + "customers(stripe_id, email, password, phone_number, first_name, last_name, "
             + "  street_address, second_street_address, city, state, zip, date_joined, is_admin) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?::state, ?, ?, ?)",
             customer.getStripeId(),
             customer.getEmail(),
             customer.getPassword(),
@@ -70,7 +69,7 @@ public class CustomerService {
             customer.getCity(),
             customer.getState().toString(),
             customer.getZip(),
-            DateUtil.dateToString(customer.getDateJoined()),
+            customer.getDateJoined(),
             false
         );
     }
