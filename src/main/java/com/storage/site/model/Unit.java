@@ -19,8 +19,6 @@ public class Unit {
     private int unitNumber;
     private boolean isLarge;
     private boolean isOccupied;
-    private boolean isDelinquent;
-    private int daysDelinquent;
     private Date startDate;
 
 }

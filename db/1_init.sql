@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS customers (
     city varchar(50),
     state state,
     zip varchar(5),
-    country varchar(20),
     date_joined date,
     is_admin boolean
 );
@@ -34,8 +33,6 @@ CREATE TABLE IF NOT EXISTS units (
     id serial NOT NULL UNIQUE,
     is_large boolean,
     is_occupied boolean,
-    is_delinquent boolean,
-    days_delinquent integer,
     start_date date,
     customer_id integer REFERENCES customers(id)
 );

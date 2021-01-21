@@ -21,8 +21,6 @@ public class UnitRowMapper implements RowMapper<Unit> {
                 rs.getInt("id"),
                 rs.getBoolean("is_large"),
                 rs.getBoolean("is_occupied"),
-                rs.getBoolean("is_delinquent"),
-                rs.getInt("days_delinquent"),
                 rs.getDate("start_date")
         );
     }

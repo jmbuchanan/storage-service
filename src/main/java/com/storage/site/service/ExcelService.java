@@ -189,8 +189,6 @@ public class ExcelService {
         header.add("Large");
         header.add("Occupied");
         header.add("Start Date");
-        header.add("Delinquent");
-        header.add("Days Delinquent");
 
         Row row = sheet.createRow(0);
 
@@ -206,12 +204,10 @@ public class ExcelService {
             row.createCell(1).setCellValue(units.get(i).isLarge());
             row.createCell(2).setCellValue(units.get(i).isOccupied());
             row.createCell(3).setCellValue(units.get(i).getStartDate());
-            row.createCell(4).setCellValue(units.get(i).isDelinquent());
-            row.createCell(5).setCellValue(units.get(i).getDaysDelinquent());
         }
 
         //Autosize Columns
-        IntStream.range(0,5).forEach(column -> sheet.autoSizeColumn(column));
+        IntStream.range(0,3).forEach(column -> sheet.autoSizeColumn(column));
 
         //Write Workbook to byte array
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
