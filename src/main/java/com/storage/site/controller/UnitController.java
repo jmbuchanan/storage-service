@@ -60,7 +60,6 @@ public class UnitController {
     public ResponseEntity<String> bookUnit(@RequestBody BookRequest bookRequest) throws StripeException {
         log.info(bookRequest.toString());
         Unit bookedUnit = unitService.bookUnit(bookRequest);
-        Subscription subscription = makeSubscription();
         if (bookedUnit != null) {
             return new ResponseEntity<>("Unit booked", HttpStatus.OK);
         } else {
@@ -76,12 +75,12 @@ public class UnitController {
         Date nextMonthFirstDay = calendar.getTime();
 
         List<Object> items = new ArrayList<>();
-        Map<String, Object> item1 = new HashMap<>();
-        item1.put(
+        Map<String, Object> price = new HashMap<>();
+        price.put(
                 "price",
                 "price_1I8y8bBBzZIBZ7GfAOedK0Dk"
         );
-        items.add(item1);
+        items.add(price);
         Map<String, Object> params = new HashMap<>();
         params.put("customer", "cus_IkTnsw6FFLRQLc");
         params.put("items", items);
