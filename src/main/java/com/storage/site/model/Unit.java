@@ -17,9 +17,8 @@ import java.util.Date;
 public class Unit {
 
     private int unitNumber;
-    private boolean isLarge;
-    private boolean isOccupied;
-    private Date startDate;
+    private int priceId;
+    private int customerId;
 
 }
 

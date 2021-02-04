@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/storage_site
-    username: user
-    password: password
+    url: jdbc:postgresql://localhost:5433/storage_site
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
 
   # Stripe uses GSON instead of Jackson for JSON mapping
   # https://github.com/stripe/stripe-java/issues/307

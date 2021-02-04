@@ -19,9 +19,8 @@ public class UnitRowMapper implements RowMapper<Unit> {
 
         return new Unit(
                 rs.getInt("id"),
-                rs.getBoolean("is_large"),
-                rs.getBoolean("is_occupied"),
-                rs.getDate("start_date")
+                rs.getInt("price_id"),
+                rs.getInt("customer_id")
         );
     }
 }

@@ -8,4 +8,11 @@ if [[ "$(docker ps -a -q --filter ancestor=local-postgres --format="{{.ID}}" 2> 
   docker rm $(docker stop $(docker ps -a -q --filter ancestor=local-postgres --format="{{.ID}}"))
 fi
 
-docker run --rm -p 5432:5432 local-postgres
+docker run \
+	--rm \
+	-e POSTGRES_DB=storage_site \
+	-e POSTGRES_USER=${POSTGRES_USER} \
+	-e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
+	-p 5433:5432 \
+	local-postgres
+	

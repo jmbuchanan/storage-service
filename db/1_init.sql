@@ -29,19 +29,17 @@ CREATE TABLE IF NOT EXISTS customers (
     is_admin boolean
 );
 
-CREATE TABLE IF NOT EXISTS units (
-    id serial NOT NULL UNIQUE,
-    is_occupied boolean,
-    start_date date,
-    price_id integer REFERENCES prices(id),
-    customer_id integer REFERENCES customers(id)
-);
-
 CREATE TABLE IF NOT EXISTS prices (
     id serial NOT NULL UNIQUE,
     stripe_id VARCHAR(100) NOT NULL UNIQUE,
     price NUMERIC(5, 2) NOT NULL UNIQUE
-)
+);
+
+CREATE TABLE IF NOT EXISTS units (
+    id serial NOT NULL UNIQUE,
+    price_id integer REFERENCES prices(id),
+    customer_id integer REFERENCES customers(id)
+);
 
 CREATE TABLE IF NOT EXISTS payment_methods (
     id serial PRIMARY KEY,

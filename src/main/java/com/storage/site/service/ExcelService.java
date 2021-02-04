@@ -201,9 +201,6 @@ public class ExcelService {
         for (int i = 0; i < units.size(); i++) {
             row = sheet.createRow(i+1);
             row.createCell(0).setCellValue(units.get(i).getUnitNumber());
-            row.createCell(1).setCellValue(units.get(i).isLarge());
-            row.createCell(2).setCellValue(units.get(i).isOccupied());
-            row.createCell(3).setCellValue(units.get(i).getStartDate());
         }
 
         //Autosize Columns

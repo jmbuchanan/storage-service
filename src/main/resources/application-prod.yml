@@ -1,11 +1,9 @@
 spring:
   datasource:
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/storage_site
 
 cors:
   origin: https://www.jeffersonminiwarehouses.com, https://jeffersonminiwarehouses.com
-
 
 stripe:
   publishable:

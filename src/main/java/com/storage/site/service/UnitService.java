@@ -34,8 +34,9 @@ public class UnitService {
     }
 
     public Unit bookUnit(BookRequest bookRequest) {
-        boolean isLarge = bookRequest.getUnitSize().equals("1");
-        List<Unit> units = jdbcTemplate.query("SELECT * FROM units WHERE is_occupied = false AND is_large = ? LIMIT 1;", new Object[] {isLarge}, unitRowMapper);
+        int priceId = Integer.parseInt(bookRequest.getUnitSize());
+        List<Unit> units = jdbcTemplate.query("SELECT * FROM units WHERE customer_id IS NULL AND price_id = ? LIMIT 1;",
+                new Integer[] {priceId}, unitRowMapper);
         if (units.size() == 0) {
             return null;
         }
@@ -46,14 +47,14 @@ public class UnitService {
             return null;
         }
         Unit unit = units.get(0);
-        jdbcTemplate.update("UPDATE units SET is_occupied = true, start_date = ?, customer_id = ? WHERE id = ?;",
+        jdbcTemplate.update("UPDATE units SET customer_id = ? WHERE id = ?;",
                 DateUtil.stringToDate(bookRequest.getStartDate()), bookRequest.getCustomerId(), unit.getUnitNumber());
         log.info(String.format("Unit %s booked for customer %s", unit.getUnitNumber(), bookRequest.getCustomerId()));
         return unit;
     }
 
     public boolean cancelSubscription(Long unitNumber) {
-        jdbcTemplate.update("UPDATE units SET is_occupied = false, start_date = null, customer_id = null WHERE id = ?;", unitNumber);
+        jdbcTemplate.update("UPDATE units SET customer_id = null WHERE id = ?;", unitNumber);
         return true;
     }
 
