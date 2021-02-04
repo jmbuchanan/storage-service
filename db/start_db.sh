@@ -9,6 +9,7 @@ if [[ "$(docker ps -a -q --filter ancestor=local-postgres --format="{{.ID}}" 2> 
 fi
 
 docker run \
+	-d \
 	--rm \
 	-e POSTGRES_DB=storage_site \
 	-e POSTGRES_USER=${POSTGRES_USER} \
