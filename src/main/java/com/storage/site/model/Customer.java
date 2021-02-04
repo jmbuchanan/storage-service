@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
+import java.util.Locale;
 
 @Slf4j
 @Getter
@@ -38,7 +39,7 @@ public class Customer {
         ) {
         this.id = id;
         this.stripeId = stripeId;
-        this.email = email;
+        this.email = email.toLowerCase();
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
