@@ -143,8 +143,6 @@ public class ExcelService {
             row = sheet.createRow(i+1);
             row.createCell(0).setCellValue(transactions.get(i).getId());
             row.createCell(1).setCellValue(transactions.get(i).getType().toString());
-            row.createCell(2).setCellValue(transactions.get(i).getDate());
-            row.createCell(3).setCellValue(transactions.get(i).getAmount().toString());
             row.createCell(4).setCellValue(transactions.get(i).getCustomerId());
             row.createCell(5).setCellValue(transactions.get(i).getUnitId());
         }

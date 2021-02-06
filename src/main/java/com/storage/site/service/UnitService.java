@@ -1,10 +1,7 @@
 package com.storage.site.service;
 
 import com.storage.site.dto.BookRequest;
-import com.storage.site.model.Customer;
-import com.storage.site.model.PaymentMethod;
-import com.storage.site.model.Price;
-import com.storage.site.model.Unit;
+import com.storage.site.model.*;
 import com.storage.site.model.rowmapper.UnitRowMapper;
 import com.storage.site.util.DateUtil;
 import com.stripe.Stripe;
@@ -31,6 +28,9 @@ public class UnitService {
     private PaymentMethodService paymentMethodService;
 
     @Autowired
+    private TransactionService transactionService;
+
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -53,7 +53,7 @@ public class UnitService {
             return null;
         }
         try {
-            makeSubscription(bookRequest);
+            makeSubscription(bookRequest, units.get(0).getUnitNumber());
         } catch (StripeException e) {
             log.warn("Error communicating with Stripe server");
             return null;
@@ -70,7 +70,7 @@ public class UnitService {
         return true;
     }
 
-    private void makeSubscription(BookRequest bookRequest) throws StripeException {
+    private void makeSubscription(BookRequest bookRequest, int unitNumber) throws StripeException {
 
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, 1);
@@ -97,7 +97,18 @@ public class UnitService {
         params.put("default_payment_method", paymentId);
         params.put("billing_cycle_anchor", nextMonthFirstDay);
 
+        Transaction transaction = new Transaction(
+                0,
+                Transaction.Type.BOOK,
+                new Date(),
+                DateUtil.stringToDate(bookRequest.getStartDate()),
+                customer.getId(),
+                unitNumber,
+                bookRequest.getCardId()
+        );
+
+        transactionService.insertTransaction(transaction);
+
         Subscription.create(params);
     }
-
 }

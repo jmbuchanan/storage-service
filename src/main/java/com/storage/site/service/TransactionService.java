@@ -2,16 +2,13 @@ package com.storage.site.service;
 
 import com.storage.site.model.Transaction;
 import com.storage.site.model.rowmapper.TransactionRowMapper;
-import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Service
@@ -28,14 +25,11 @@ public class TransactionService {
         return transactions;
     }
 
-    public PaymentIntent collectPayment() throws StripeException {
-        PaymentIntentCreateParams params =
-                PaymentIntentCreateParams.builder()
-                        .setCurrency("usd")
-                        .setAmount(51L)
-                        .putMetadata("integration_check", "accept_a_payment")
-                        .build();
-
-        return PaymentIntent.create(params);
+    public void insertTransaction(Transaction transaction) {
+        String sql = "INSERT INTO transactions " +
+                "(transaction_type, request_date, execution_date, customer_id, unit_id, payment_method_id) " +
+                "VALUES (?::transaction_type, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, transaction.getType().toString().toUpperCase(), transaction.getRequestDate(), transaction.getExecutionDate(),
+                transaction.getCustomerId(), transaction.getUnitId(), transaction.getPaymentMethodId());
     }
 }

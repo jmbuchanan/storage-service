@@ -36,13 +36,5 @@ public class TransactionController {
     public ResponseEntity<byte[]> exportExcelWorkbook() {
         return excelService.generateTransactionWorkbook();
     }
-
-    @PostMapping("/pay")
-    public ResponseEntity<String> pay() throws StripeException {
-        PaymentIntent paymentIntent = transactionService.collectPayment();
-        String secret = paymentIntent.getClientSecret();
-
-        return new ResponseEntity<>(secret, HttpStatus.OK);
-    }
 }
 

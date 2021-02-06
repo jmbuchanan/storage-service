@@ -17,11 +17,12 @@ public class TransactionRowMapper implements RowMapper<Transaction> {
 
         return new Transaction(
                 rs.getInt("id"),
-                Transaction.Type.valueOf(rs.getString("type").toUpperCase()),
-                DateUtil.stringToDate(rs.getString("date")),
-                BigDecimal.valueOf(rs.getFloat("amount")),
+                Transaction.Type.valueOf(rs.getString("transaction_type").toUpperCase()),
+                rs.getDate("request_date"),
+                rs.getDate("execution_date"),
                 rs.getInt("customer_id"),
-                rs.getInt("unit_id")
+                rs.getInt("unit_id"),
+                rs.getInt("payment_method_id")
         );
     }
 }

@@ -12,6 +12,16 @@ DO $$ BEGIN
     WHEN duplicate_object THEN null;
 END $$;
 
+DO $$ BEGIN
+    CREATE TYPE transaction_type
+        AS ENUM (
+        'BOOK',
+        'CANCEL'
+        );
+    EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
 CREATE TABLE IF NOT EXISTS customers (
     id serial PRIMARY KEY,
     stripe_id varchar(100) UNIQUE,
@@ -48,5 +58,15 @@ CREATE TABLE IF NOT EXISTS payment_methods (
     date_added date,
     last_four varchar(4),
     customer_id integer references customers(id)
+);
+
+CREATE TABLE IF NOT EXISTS transactions (
+    id serial PRIMARY KEY,
+    transaction_type transaction_type,
+    request_date date,
+    execution_date date,
+    customer_id integer REFERENCES customers(id),
+    unit_id integer REFERENCES units(id),
+    payment_method_id integer REFERENCES payment_methods(id)
 );
 

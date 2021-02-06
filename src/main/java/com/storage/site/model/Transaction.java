@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -14,14 +13,15 @@ public class Transaction {
 
     private int id;
     private Type type;
-    private Date date;
-    private BigDecimal amount;
+    private Date requestDate;
+    private Date executionDate;
     private int customerId;
     private int unitId;
+    private int paymentMethodId;
 
     public enum Type {
-        CHARGE,
-        PAYMENT;
+        BOOK,
+        CANCEL;
 
         @Override
         public String toString() {
