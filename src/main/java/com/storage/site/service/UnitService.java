@@ -1,6 +1,9 @@
 package com.storage.site.service;
 
 import com.storage.site.dto.BookRequest;
+import com.storage.site.model.Customer;
+import com.storage.site.model.PaymentMethod;
+import com.storage.site.model.Price;
 import com.storage.site.model.Unit;
 import com.storage.site.model.rowmapper.UnitRowMapper;
 import com.storage.site.util.DateUtil;
@@ -17,6 +20,15 @@ import java.util.*;
 @Slf4j
 @Service
 public class UnitService {
+
+    @Autowired
+    private PriceService priceService;
+
+    @Autowired
+    private CustomerService customerService;
+
+    @Autowired
+    private PaymentMethodService paymentMethodService;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -48,7 +60,7 @@ public class UnitService {
         }
         Unit unit = units.get(0);
         jdbcTemplate.update("UPDATE units SET customer_id = ? WHERE id = ?;",
-                DateUtil.stringToDate(bookRequest.getStartDate()), bookRequest.getCustomerId(), unit.getUnitNumber());
+                bookRequest.getCustomerId(), unit.getUnitNumber());
         log.info(String.format("Unit %s booked for customer %s", unit.getUnitNumber(), bookRequest.getCustomerId()));
         return unit;
     }
@@ -67,15 +79,22 @@ public class UnitService {
 
         List<Object> items = new ArrayList<>();
         Map<String, Object> price = new HashMap<>();
+        Price priceEntity = priceService.getPriceById(Integer.parseInt(bookRequest.getUnitSize()));
+        String priceId = priceEntity.getStripeId();
         price.put(
                 "price",
-                "price_1I8y8bBBzZIBZ7GfAOedK0Dk"
+                priceId
         );
         items.add(price);
         Map<String, Object> params = new HashMap<>();
-        params.put("customer", "cus_IkTnsw6FFLRQLc");
+        Customer customer = customerService.getCustomerbyId(bookRequest.getCustomerId());
+        String customerId = customer.getStripeId();
+        params.put("customer", customerId);
         params.put("items", items);
-        params.put("default_payment_method", "pm_1I8yqZBBzZIBZ7GfByWaOQPw");
+
+        PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(bookRequest.getCardId());
+        String paymentId = paymentMethod.getStripeId();
+        params.put("default_payment_method", paymentId);
         params.put("billing_cycle_anchor", nextMonthFirstDay);
 
         Subscription.create(params);

@@ -66,27 +66,4 @@ public class UnitController {
             return new ResponseEntity<>("No unit available", HttpStatus.CONFLICT);
         }
     }
-
-    private Subscription makeSubscription() throws StripeException {
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, 1);
-        calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-        Date nextMonthFirstDay = calendar.getTime();
-
-        List<Object> items = new ArrayList<>();
-        Map<String, Object> price = new HashMap<>();
-        price.put(
-                "price",
-                "price_1I8y8bBBzZIBZ7GfAOedK0Dk"
-        );
-        items.add(price);
-        Map<String, Object> params = new HashMap<>();
-        params.put("customer", "cus_IkTnsw6FFLRQLc");
-        params.put("items", items);
-        params.put("default_payment_method", "pm_1I8yqZBBzZIBZ7GfByWaOQPw");
-        params.put("billing_cycle_anchor", nextMonthFirstDay);
-
-        return Subscription.create(params);
-    }
 }

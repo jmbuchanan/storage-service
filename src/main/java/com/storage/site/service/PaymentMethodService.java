@@ -20,6 +20,20 @@ public class PaymentMethodService {
     @Autowired
     private PaymentMethodRowMapper paymentMethodRowMapper;
 
+    public PaymentMethod getPaymentMethodById(int id) {
+
+        Object [] sqlParam = {id};
+
+        try {
+            List<PaymentMethod> paymentMethods = jdbcTemplate.query("SELECT * FROM payment_methods WHERE id = ?", sqlParam, paymentMethodRowMapper);
+            return paymentMethods.get(0);
+
+        } catch (EmptyResultDataAccessException e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
     public List<PaymentMethod> getPaymentMethodsByCustomerId(int customerId) {
 
         Object [] sqlParam = {customerId};

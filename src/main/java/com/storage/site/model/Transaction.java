@@ -19,7 +19,6 @@ public class Transaction {
     private int customerId;
     private int unitId;
 
-
     public enum Type {
         CHARGE,
         PAYMENT;
