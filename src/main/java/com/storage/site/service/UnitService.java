@@ -87,7 +87,7 @@ public class UnitService {
         );
         items.add(price);
         Map<String, Object> params = new HashMap<>();
-        Customer customer = customerService.getCustomerbyId(bookRequest.getCustomerId());
+        Customer customer = customerService.getCustomerById(bookRequest.getCustomerId());
         String customerId = customer.getStripeId();
         params.put("customer", customerId);
         params.put("items", items);

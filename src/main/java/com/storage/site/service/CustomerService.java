@@ -1,5 +1,6 @@
 package com.storage.site.service;
 
+import com.storage.site.dao.CustomerDao;
 import com.storage.site.model.Customer;
 import com.storage.site.model.rowmapper.CustomerRowMapper;
 import com.stripe.exception.StripeException;
@@ -28,26 +29,15 @@ public class CustomerService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private CustomerDao customerDao;
+
     public List<Customer> getAllCustomers() {
-
-        List<Customer> customers = jdbcTemplate.query("SELECT * FROM customers", customerRowMapper);
-
-        return customers;
+        return customerDao.getAllCustomers();
     }
 
-    public Customer getCustomerbyId(int id) {
-        Object [] sqlParam = {id};
-        String sql = "SELECT * FROM customers WHERE id = ?;";
-
-        try {
-            Customer customer = jdbcTemplate.queryForObject(sql, sqlParam, customerRowMapper);
-            return customer;
-
-        } catch (EmptyResultDataAccessException e) {
-            e.getMessage();
-        }
-
-        return new Customer();
+    public Customer getCustomerById(int id) {
+        return customerDao.getCustomerById(id);
     }
 
     public Customer getCustomerByEmail(String email) {

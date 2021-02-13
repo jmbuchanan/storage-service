@@ -45,7 +45,7 @@ public class PaymentMethodController {
         com.stripe.model.PaymentMethod stripePaymentMethod = com.stripe.model.PaymentMethod.retrieve(paymentMethod.getStripeId());
 
         Map<String, Object> params = new HashMap<>();
-        Customer stripeCustomer = customerService.getCustomerbyId(paymentMethod.getCustomerId());
+        Customer stripeCustomer = customerService.getCustomerById(paymentMethod.getCustomerId());
         params.put("customer", stripeCustomer.getStripeId());
 
         stripePaymentMethod.attach(params);
