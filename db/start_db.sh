@@ -1,13 +1,26 @@
 #!/bin/bash
 
-if [[ "$(docker images -q local-postgres 2> /dev/null)" == "" ]]; then
-  docker build -t local-postgres .
+IMAGE_NAME=local-postgres
+containerId=$(docker ps -a -q --filter ancestor=$IMAGE_NAME --format="{{.ID}}" 2> /dev/null)
+imageId=$(docker images -q $IMAGE_NAME 2> /dev/null)
+
+#stop running local-postgres containers
+if [ $containerId != "" ]; then
+  docker stop $containerId > /dev/null
 fi
 
-if [[ "$(docker ps -a -q --filter ancestor=local-postgres --format="{{.ID}}" 2> /dev/null)" != "" ]]; then
-  docker rm $(docker stop $(docker ps -a -q --filter ancestor=local-postgres --format="{{.ID}}"))
+#rebuild if -r flag included
+if [ "$1" = "-r" ]; then
+  docker image rm $imageId
+  docker build -t $IMAGE_NAME .
 fi
 
+#build if doesn't exist
+if [[ $imageId == "" ]]; then
+  docker build -t $IMAGE_NAME .
+fi
+
+#run in detached mode with auto-clean on exit
 docker run \
 	-d \
 	--rm \
@@ -15,5 +28,5 @@ docker run \
 	-e POSTGRES_USER=${POSTGRES_USER} \
 	-e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
 	-p 5433:5432 \
-	local-postgres
+	$IMAGE_NAME
 	
