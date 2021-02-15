@@ -16,6 +16,6 @@ public class LoggingConfig {
     @After("execution(* com.storage.site.controller.*.*(..))")
     public void logRequestEnd() throws Throwable {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        log.info(String.format("REQUEST END: %s >>>", request.getAttribute("uuid")));
+        log.info(String.format("REQUEST END: %s >>>>>", request.getAttribute("uuid")));
     }
 }

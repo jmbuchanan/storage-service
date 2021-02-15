@@ -4,6 +4,7 @@ import com.storage.site.model.Customer;
 import com.storage.site.service.CustomerService;
 import com.storage.site.service.ExcelService;
 import com.storage.site.service.JwtService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,17 +17,12 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/customers")
+@AllArgsConstructor
 public class CustomerController {
 
-    @Autowired
-    private CustomerService customerService;
-
-    @Autowired
-    private ExcelService excelService;
-
-    @Autowired
-    private JwtService jwtService;
-
+    private final CustomerService customerService;
+    private final ExcelService excelService;
+    private final JwtService jwtService;
 
     @GetMapping("/getAllCustomers")
     public List<Customer> getAllCustomers() {
@@ -41,7 +37,7 @@ public class CustomerController {
     @PostMapping("/addCustomer")
     public ResponseEntity<String> addCustomer(@RequestBody Customer customerRequest) {
 
-        log.info(String.format("Register account request for e-mail \'%s\'", customerRequest.getEmail()));
+        log.info(String.format("Register account request for e-mail '%s'", customerRequest.getEmail()));
 
         Customer customer = customerService.getCustomerByEmail(customerRequest.getEmail());
 
@@ -55,10 +51,14 @@ public class CustomerController {
             log.info("Verified this is not an existing customer. Creating record in database");
             customer = customerService.register(customerRequest);
 
-            String token = jwtService.generateToken(customer);
-            headers.add("Set-Cookie", "Authorization=" + token + "; Path=/");
+            if (customer.getStripeId() != null) {
+                String token = jwtService.generateToken(customer);
+                headers.add("Set-Cookie", "Authorization=" + token + "; Path=/");
 
-            return new ResponseEntity<>(headers, HttpStatus.OK);
+                return new ResponseEntity<>(headers, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(headers, HttpStatus.REQUEST_TIMEOUT);
+            }
         }
     }
 

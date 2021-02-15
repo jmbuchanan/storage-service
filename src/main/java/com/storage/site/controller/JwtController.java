@@ -44,12 +44,12 @@ public class JwtController {
         String email = loginRequest.getEmail();
         String providedPassword = loginRequest.getPassword();
 
-        log.info(String.format("Client sending request to log in as \'%s\'", email));
+        log.info(String.format("Client sending request to log in as '%s'", email));
 
         Customer customer = customerService.getCustomerByEmail(email);
 
         if (!isExistingCustomer(customer)) {
-            log.info(String.format("No customer found with email \'%s\'. Returning 404", email));
+            log.info(String.format("No customer found with email '%s'. Returning 404", email));
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 

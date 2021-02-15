@@ -2,12 +2,9 @@ package com.storage.site.service;
 
 import com.storage.site.dao.CustomerDao;
 import com.storage.site.model.Customer;
-import com.storage.site.model.rowmapper.CustomerRowMapper;
 import com.stripe.exception.StripeException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,19 +15,11 @@ import java.util.Map;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class CustomerService {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private CustomerRowMapper customerRowMapper;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private CustomerDao customerDao;
+    private final CustomerDao customerDao;
+    private final PasswordEncoder passwordEncoder;
 
     public List<Customer> getAllCustomers() {
         return customerDao.getAllCustomers();
@@ -41,67 +30,34 @@ public class CustomerService {
     }
 
     public Customer getCustomerByEmail(String email) {
-
-        Object [] sqlParam = {email.toLowerCase()};
-        String sql = "SELECT * FROM customers WHERE email LIKE ?;";
-
-        try {
-            Customer customer = jdbcTemplate.queryForObject(sql, sqlParam, customerRowMapper);
-            return customer;
-
-        } catch (EmptyResultDataAccessException e) {
-            e.getMessage();
-        }
-
-        return new Customer();
+        return customerDao.getCustomerByEmail(email);
     }
 
     public void save(Customer customer) {
-
-        jdbcTemplate.update(
-            "INSERT INTO "
-            + "customers(stripe_id, email, password, phone_number, first_name, last_name, "
-            + "  street_address, second_street_address, city, state, zip, date_joined, is_admin) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?::state, ?, ?, ?)",
-            customer.getStripeId(),
-            customer.getEmail(),
-            customer.getPassword(),
-            customer.getPhoneNumber(),
-            customer.getFirstName(),
-            customer.getLastName(),
-            customer.getStreetAddress(),
-            customer.getSecondStreetAddress(),
-            customer.getCity(),
-            customer.getState().toString(),
-            customer.getZip(),
-            customer.getDateJoined(),
-            false
-        );
+        customerDao.insertCustomer(customer);
     }
 
     public Customer register(Customer customer) {
 
         Map<String, Object> customerParams = new HashMap<>();
         customerParams.put("email", customer.getEmail());
-        com.stripe.model.Customer stripeCustomer = null;
-        String stripeCustomerId = null;
+        com.stripe.model.Customer stripeCustomer;
+        String stripeCustomerId;
         try {
             stripeCustomer = com.stripe.model.Customer.create(customerParams);
             stripeCustomerId = stripeCustomer.getId();
         } catch (StripeException e) {
             e.getMessage();
+            return customer;
         }
 
         customer.setStripeId(stripeCustomerId);
-        //call setter method to sanitize email
-        customer.setEmail(customer.getEmail());
-        //call setter method to hash password
-        customer.setPassword(customer.getPassword());
         customer.setDateJoined(new Date());
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
 
         save(customer);
 
         log.info("Querying record to return database generated customer ID");
-        return getCustomerByEmail(customer.getEmail());
+        return customerDao.getCustomerByEmail(customer.getEmail());
     }
 }
