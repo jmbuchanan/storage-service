@@ -1,9 +1,9 @@
 package com.storage.site.service;
 
+import com.storage.site.dao.PaymentMethodDao;
 import com.storage.site.model.PaymentMethod;
 import com.storage.site.model.rowmapper.PaymentMethodRowMapper;
-import com.storage.site.util.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -12,26 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class PaymentMethodService {
 
-    @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     private PaymentMethodRowMapper paymentMethodRowMapper;
+    private PaymentMethodDao paymentMethodDao;
 
     public PaymentMethod getPaymentMethodById(int id) {
-
-        Object [] sqlParam = {id};
-
-        try {
-            List<PaymentMethod> paymentMethods = jdbcTemplate.query("SELECT * FROM payment_methods WHERE id = ?", sqlParam, paymentMethodRowMapper);
-            return paymentMethods.get(0);
-
-        } catch (EmptyResultDataAccessException e) {
-            e.getMessage();
-            return null;
-        }
+        return paymentMethodDao.getPaymentMethodById(id);
     }
 
     public List<PaymentMethod> getPaymentMethodsByCustomerId(int customerId) {

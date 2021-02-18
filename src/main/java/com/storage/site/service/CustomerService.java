@@ -33,10 +33,6 @@ public class CustomerService {
         return customerDao.getCustomerByEmail(email);
     }
 
-    public void save(Customer customer) {
-        customerDao.insertCustomer(customer);
-    }
-
     public Customer register(Customer customer) {
 
         Map<String, Object> customerParams = new HashMap<>();
@@ -55,7 +51,8 @@ public class CustomerService {
         customer.setDateJoined(new Date());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
 
-        save(customer);
+        log.info("Inserting new customer record into database");
+        customerDao.insertCustomer(customer);
 
         log.info("Querying record to return database generated customer ID");
         return customerDao.getCustomerByEmail(customer.getEmail());
