@@ -41,13 +41,10 @@ public class UnitController {
     }
 
     @PutMapping("/{unitNumber}")
-    public ResponseEntity<String> cancelSubscription(@PathVariable Long unitNumber) {
+    public ResponseEntity<String> cancelSubscription(@PathVariable int unitNumber) {
         log.info("PUT request received for unit number " + unitNumber);
-        if (unitService.cancelSubscription(unitNumber)) {
-            return new ResponseEntity<>("Resource updated", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Issue updated resource", HttpStatus.NOT_FOUND);
-        }
+        unitService.cancelSubscription(unitNumber);
+        return new ResponseEntity<>("Resource updated", HttpStatus.OK);
     }
 
     @GetMapping("/fetchByCustomerId")

@@ -58,10 +58,7 @@ public class PaymentMethodController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePaymentMethodById(@PathVariable Long id) {
         log.info("DELETE request received for card id " + id);
-        if (paymentMethodService.delete(id)) {
-            return new ResponseEntity<>("Resource deleted", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Issue deleting resource", HttpStatus.NOT_FOUND);
-        }
+        paymentMethodService.delete(id);
+        return new ResponseEntity<>("Resource deleted", HttpStatus.OK);
     }
 }

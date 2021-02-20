@@ -6,6 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -16,6 +17,16 @@ public class PaymentMethodDao {
 
     private static final String SELECT_PAYMENT_METHOD_BY_ID =
             "SELECT * FROM payment_methods WHERE id = ?";
+
+    private static final String SELECT_PAYMENT_METHOD_BY_CUSTOMER_ID =
+            "SELECT * FROM payment_methods WHERE customer_id = ?";
+
+    private static final String INSERT_PAYMENT_METHOD =
+            "INSERT INTO payment_methods(stripe_id, card_brand, date_added, last_four, customer_id) "
+                    + "  VALUES(?, ?, ?, ?, ?)";
+
+    private static final String DELETE_BY_ID =
+            "DELETE FROM payment_methods WHERE id = ?";
 
     public PaymentMethodDao(JdbcTemplate jdbcTemplate, PaymentMethodRowMapper paymentMethodRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -33,4 +44,27 @@ public class PaymentMethodDao {
         }
     }
 
+    public List<PaymentMethod> getPaymentMethodsByCustomerId(int id) {
+        try {
+            return jdbcTemplate.query(SELECT_PAYMENT_METHOD_BY_CUSTOMER_ID, new Integer[] {id}, paymentMethodRowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            e.getMessage();
+            return new ArrayList<>();
+        }
+    }
+
+    public void insert(PaymentMethod paymentMethod) {
+        jdbcTemplate.update(
+                INSERT_PAYMENT_METHOD,
+                paymentMethod.getStripeId(),
+                paymentMethod.getCardBrand(),
+                paymentMethod.getDateAdded(),
+                paymentMethod.getLastFour(),
+                paymentMethod.getCustomerId()
+        );
+    }
+
+    public void deleteById(Long id) {
+        jdbcTemplate.update(DELETE_BY_ID, id);
+    }
 }
