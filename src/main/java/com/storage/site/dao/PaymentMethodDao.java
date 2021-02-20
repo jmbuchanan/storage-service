@@ -19,14 +19,14 @@ public class PaymentMethodDao {
             "SELECT * FROM payment_methods WHERE id = ?";
 
     private static final String SELECT_PAYMENT_METHOD_BY_CUSTOMER_ID =
-            "SELECT * FROM payment_methods WHERE customer_id = ?";
+            "SELECT * FROM payment_methods WHERE is_active AND customer_id = ?";
 
     private static final String INSERT_PAYMENT_METHOD =
-            "INSERT INTO payment_methods(stripe_id, card_brand, date_added, last_four, customer_id) "
-                    + "  VALUES(?, ?, ?, ?, ?)";
+            "INSERT INTO payment_methods(stripe_id, card_brand, date_added, last_four, customer_id, is_active) "
+                    + "  VALUES(?, ?, ?, ?, ?, true)";
 
-    private static final String DELETE_BY_ID =
-            "DELETE FROM payment_methods WHERE id = ?";
+    private static final String SET_INACTIVE_BY_ID =
+            "UPDATE payment_methods SET is_active = false WHERE id = ?";
 
     public PaymentMethodDao(JdbcTemplate jdbcTemplate, PaymentMethodRowMapper paymentMethodRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -64,7 +64,7 @@ public class PaymentMethodDao {
         );
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update(DELETE_BY_ID, id);
+    public void setInactiveById(Long id) {
+        jdbcTemplate.update(SET_INACTIVE_BY_ID, id);
     }
 }

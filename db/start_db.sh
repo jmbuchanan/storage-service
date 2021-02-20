@@ -15,7 +15,7 @@ if [ "$1" = "-r" ]; then
   docker build -t $IMAGE_NAME .
 fi
 
-#build if doesn't exist
+#build image if doesn't exist
 if [[ $imageId == "" ]]; then
   docker build -t $IMAGE_NAME .
 fi

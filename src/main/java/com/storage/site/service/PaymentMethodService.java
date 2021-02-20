@@ -25,8 +25,8 @@ public class PaymentMethodService {
         paymentMethodDao.insert(paymentMethod);
     }
 
-    public void delete(Long id) {
-        paymentMethodDao.deleteById(id);
+    public void setInactive(Long id) {
+        paymentMethodDao.setInactiveById(id);
     }
 
 }

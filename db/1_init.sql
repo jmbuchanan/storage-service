@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS payment_methods (
     card_brand varchar(20),
     date_added date,
     last_four varchar(4),
+    is_active boolean,
     customer_id integer references customers(id)
 );
 
