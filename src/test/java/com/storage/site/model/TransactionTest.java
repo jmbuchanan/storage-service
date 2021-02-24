@@ -1,6 +1,6 @@
 package com.storage.site.model;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TransactionTest {
 
