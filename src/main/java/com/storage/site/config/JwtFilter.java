@@ -3,7 +3,6 @@ package com.storage.site.config;
 import com.storage.site.service.CustomerService;
 import com.storage.site.service.JwtService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,16 +19,17 @@ import java.util.UUID;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired
     private CustomerService customerService;
-
-    @Autowired
     private JwtService jwtService;
 
     private enum Role {
         NONE, USER, ADMIN;
     }
 
+    public JwtFilter(CustomerService customerService, JwtService jwtService) {
+        this.customerService = customerService;
+        this.jwtService = jwtService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -46,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
         } else {
             log.info("Not authorized");
             log.info(String.format("REQUEST END: %s >>>", uuid));
-            response.setStatus(403);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
 
