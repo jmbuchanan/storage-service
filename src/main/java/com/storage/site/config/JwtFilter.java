@@ -3,6 +3,7 @@ package com.storage.site.config;
 import com.storage.site.service.CustomerService;
 import com.storage.site.service.JwtService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -19,15 +20,14 @@ import java.util.UUID;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private CustomerService customerService;
     private JwtService jwtService;
 
     private enum Role {
         NONE, USER, ADMIN;
     }
 
-    public JwtFilter(CustomerService customerService, JwtService jwtService) {
-        this.customerService = customerService;
+    @Autowired
+    public JwtFilter(JwtService jwtService) {
         this.jwtService = jwtService;
     }
 
