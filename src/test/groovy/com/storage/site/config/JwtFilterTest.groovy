@@ -10,10 +10,9 @@ import spock.lang.Specification
 
 class JwtFilterTest extends Specification {
 
-    def customerService = Mock(CustomerService)
     def jwtService = Mock(JwtService)
 
-    def jwtFilter = new JwtFilter(customerService, jwtService)
+    def jwtFilter = new JwtFilter(jwtService)
 
     def request = new MockHttpServletRequest()
     def response = new MockHttpServletResponse()

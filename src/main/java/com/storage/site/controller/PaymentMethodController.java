@@ -6,6 +6,7 @@ import com.storage.site.service.CustomerService;
 import com.storage.site.service.JwtService;
 import com.storage.site.service.PaymentMethodService;
 import com.stripe.exception.StripeException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,16 +19,12 @@ import java.util.*;
 @Slf4j
 @RestController
 @RequestMapping("/paymentMethods")
+@AllArgsConstructor
 public class PaymentMethodController {
 
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private CustomerService customerService;
-
-    @Autowired
-    private PaymentMethodService paymentMethodService;
+    private final JwtService jwtService;
+    private final CustomerService customerService;
+    private final PaymentMethodService paymentMethodService;
 
     @GetMapping("/fetchByCustomerId")
     public List<PaymentMethod> fetchByCustomerId(HttpServletRequest request) {
@@ -41,9 +38,7 @@ public class PaymentMethodController {
 
     @PostMapping("/addPaymentMethod")
     public ResponseEntity<String> addPaymentMethod(@RequestBody PaymentMethod paymentMethod) throws StripeException {
-
         com.stripe.model.PaymentMethod stripePaymentMethod = com.stripe.model.PaymentMethod.retrieve(paymentMethod.getStripeId());
-
         Map<String, Object> params = new HashMap<>();
         Customer stripeCustomer = customerService.getCustomerById(paymentMethod.getCustomerId());
         params.put("customer", stripeCustomer.getStripeId());
@@ -57,7 +52,6 @@ public class PaymentMethodController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePaymentMethodById(@PathVariable Long id) {
-        log.info("DELETE request received for card id " + id);
         paymentMethodService.setInactive(id);
         return new ResponseEntity<>("Resource deleted", HttpStatus.OK);
     }

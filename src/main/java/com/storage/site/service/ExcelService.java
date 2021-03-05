@@ -8,7 +8,6 @@ import org.apache.poi.xssf.usermodel.DefaultIndexedColorMap;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,16 +24,17 @@ import java.util.stream.IntStream;
 @Service
 public class ExcelService {
 
-    @Autowired
-    private CustomerService customerService;
+    private final CustomerService customerService;
+    private final TransactionService transactionService;
+    private final UnitService unitService;
 
-    @Autowired
-    private TransactionService transactionService;
+    private final XSSFColor headerColor = new XSSFColor(new java.awt.Color(33, 47, 61), new DefaultIndexedColorMap());
 
-    @Autowired
-    private UnitService unitService;
-
-    private XSSFColor headerColor = new XSSFColor(new java.awt.Color(33, 47, 61), new DefaultIndexedColorMap());
+    public ExcelService(CustomerService customerService, TransactionService transactionService, UnitService unitService) {
+        this.customerService = customerService;
+        this.transactionService = transactionService;
+        this.unitService = unitService;
+    }
 
     public ResponseEntity<byte[]> generateCustomerWorkbook() {
 

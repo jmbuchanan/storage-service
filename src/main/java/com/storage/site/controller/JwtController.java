@@ -3,6 +3,7 @@ package com.storage.site.controller;
 import com.storage.site.model.Customer;
 import com.storage.site.service.CustomerService;
 import com.storage.site.service.JwtService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -18,16 +19,12 @@ import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RestController
+@AllArgsConstructor
 public class JwtController {
 
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private CustomerService customerService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final CustomerService customerService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/authenticate")
     public ResponseEntity<String> authenticate(HttpServletRequest request) {
@@ -36,7 +33,6 @@ public class JwtController {
         log.info("Preflight request authorized");
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
     @PostMapping("/login")
     public ResponseEntity<String> createAuthenticationToken(@RequestBody Customer loginRequest) {
@@ -69,4 +65,3 @@ public class JwtController {
         return customer.getId() != 0L;
     }
 }
-

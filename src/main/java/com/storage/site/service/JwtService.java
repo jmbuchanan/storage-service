@@ -26,13 +26,11 @@ public class JwtService {
 
     @Scheduled(cron="0 0 0 * * *", zone="America/New_York")
     private void clearCaches() {
-
         log.info(String.format("Clearing %d cached user tokens", cachedUserTokens.size()));
         cachedUserTokens.clear();
         log.info(String.format("Clearing %d cached admin tokens", cachedAdminTokens.size()));
         cachedAdminTokens.clear();
     }
-
 
     public String generateToken(Customer customer) {
 

@@ -26,10 +26,4 @@ public class DateUtil {
         }
         return date;
     }
-
-    public static String dateToString(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-        formatter.setTimeZone(TimeZone.getTimeZone("America/New_York"));
-        return formatter.format(date);
-    }
 }

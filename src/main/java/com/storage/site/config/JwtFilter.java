@@ -26,7 +26,6 @@ public class JwtFilter extends OncePerRequestFilter {
         NONE, USER, ADMIN;
     }
 
-    @Autowired
     public JwtFilter(JwtService jwtService) {
         this.jwtService = jwtService;
     }
