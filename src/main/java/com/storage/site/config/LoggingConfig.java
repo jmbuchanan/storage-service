@@ -13,9 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class LoggingConfig {
 
-    @After("execution(* com.storage.site.controller.*.*(..))")
-    public void logRequestEnd() throws Throwable {
+    @Before("execution(* com.storage.site.controller.*.*(..))")
+    public void logRequestStart() throws Throwable {
+        beforeLog();
+    }
+    private void beforeLog() {
+        log.info("");
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        log.info(String.format("REQUEST END: %s >>>>>", request.getAttribute("uuid")));
+        log.info(request.getMethod() + " " + request.getRequestURI());
     }
 }

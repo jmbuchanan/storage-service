@@ -33,18 +33,16 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        String uuid = UUID.randomUUID().toString();
-        log.info("");
-        log.info(String.format("<<< REQUEST START: %s", uuid));
-        log.info(request.getMethod() + " " + request.getRequestURI());
-        request.setAttribute("uuid", uuid);
+
         boolean customerIsAuthorizedToAccessResource = checkIfCustomerIsAuthorizedToAccessResource(request);
 
         if (customerIsAuthorizedToAccessResource) {
             chain.doFilter(request, response);
         } else {
+            String uuid = UUID.randomUUID().toString();
+            log.info("");
+            log.info(request.getMethod() + " " + request.getRequestURI());
             log.info("Not authorized");
-            log.info(String.format("REQUEST END: %s >>>", uuid));
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
