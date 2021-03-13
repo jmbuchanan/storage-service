@@ -24,7 +24,7 @@ public class TransactionService {
     private final PriceService priceService;
     private final TransactionDao transactionDao;
 
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void transactionBatch() throws StripeException {
         List<Transaction> transactions = transactionDao.fetchTransactionsExecutedToday();
         log.info(String.format("%s transactions to be executed today", transactions.size()));
