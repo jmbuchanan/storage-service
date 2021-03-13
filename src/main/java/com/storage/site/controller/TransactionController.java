@@ -28,8 +28,10 @@ public class TransactionController {
     @PostMapping("/book")
     public ResponseEntity<String> book(@RequestBody BookRequest bookRequest) throws StripeException {
         log.info(bookRequest.toString());
-        Unit bookedUnit = unitService.bookUnit(bookRequest);
-        if (bookedUnit != null) {
+        Unit unit = unitService.getOneUnitForPrice(Integer.parseInt(bookRequest.getUnitSize()));
+        if (unit != null) {
+            transactionService.insertPendingTransaction(bookRequest, unit.getUnitNumber());
+            unitService.updateCustomerOfUnit(bookRequest.getCustomerId(), unit.getUnitNumber());
             return new ResponseEntity<>("Unit booked", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("No unit available", HttpStatus.CONFLICT);

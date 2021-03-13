@@ -15,7 +15,6 @@ public class LoggingConfig {
 
     @Before("execution(* com.storage.site.controller.*.*(..))")
     public void logRequestStart() {
-        log.info("");
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         log.info(request.getMethod() + " " + request.getRequestURI());
     }

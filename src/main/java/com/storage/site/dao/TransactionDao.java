@@ -21,6 +21,9 @@ public class TransactionDao {
                     "(transaction_type, request_date, execution_date, customer_id, unit_id, payment_method_id) " +
                     "VALUES (?::transaction_type, ?, ?, ?, ?, ?)";
 
+    private static final String SELECT_TRANSACTIONS_WHERE_EXECUTION_DATE_IS_TODAY =
+            "SELECT * FROM transactions WHERE execution_date = CURRENT_DATE";
+
     public TransactionDao(JdbcTemplate jdbcTemplate, TransactionRowMapper transactionRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.transactionRowMapper = transactionRowMapper;
@@ -38,6 +41,10 @@ public class TransactionDao {
                 transaction.getCustomerId(),
                 transaction.getUnitId(),
                 transaction.getPaymentMethodId());
+    }
+
+    public List<Transaction> fetchTransactionsExecutedToday() {
+        return jdbcTemplate.query(SELECT_TRANSACTIONS_WHERE_EXECUTION_DATE_IS_TODAY, transactionRowMapper);
     }
 
 }
