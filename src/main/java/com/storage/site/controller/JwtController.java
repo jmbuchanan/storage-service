@@ -56,9 +56,10 @@ public class JwtController {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Set-Cookie", "Authorization=" + token + "; Path=/");
             return new ResponseEntity<>(headers, HttpStatus.OK);
+        } else {
+            log.info("Password does not match");
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     private boolean isExistingCustomer(Customer customer) {
