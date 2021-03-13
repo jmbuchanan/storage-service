@@ -51,32 +51,29 @@ public class UnitService {
     }
 
     private void makeSubscription(BookRequest bookRequest, int unitNumber) throws StripeException {
+        Map<String, Object> params = new HashMap<>();
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, 1);
-        calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-        Date nextMonthFirstDay = calendar.getTime();
+        Customer customer = customerService.getCustomerById(bookRequest.getCustomerId());
+        String customerId = customer.getStripeId();
+        params.put("customer", customerId);
 
         List<Object> items = new ArrayList<>();
         Map<String, Object> price = new HashMap<>();
         Price priceEntity = priceService.getPriceById(Integer.parseInt(bookRequest.getUnitSize()));
         String priceId = priceEntity.getStripeId();
-        price.put(
-                "price",
-                priceId
-        );
+        price.put("price", priceId);
+
         items.add(price);
-        Map<String, Object> params = new HashMap<>();
-        Customer customer = customerService.getCustomerById(bookRequest.getCustomerId());
-        String customerId = customer.getStripeId();
-        params.put("customer", customerId);
         params.put("items", items);
 
         PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(bookRequest.getCardId());
         String paymentId = paymentMethod.getStripeId();
         params.put("default_payment_method", paymentId);
-        params.put("billing_cycle_anchor", nextMonthFirstDay);
 
+        Date billingAnchor = firstDayOfNextMonth();
+        params.put("billing_cycle_anchor", billingAnchor);
+
+        //0 id gets overwritten when added to db
         Transaction transaction = new Transaction(
                 0,
                 Transaction.Type.BOOK,
@@ -90,5 +87,12 @@ public class UnitService {
         transactionService.insertTransaction(transaction);
 
         Subscription.create(params);
+    }
+
+    private Date firstDayOfNextMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+        return calendar.getTime();
     }
 }
