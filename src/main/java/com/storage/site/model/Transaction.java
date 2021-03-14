@@ -15,9 +15,7 @@ public class Transaction {
     private Type type;
     private Date requestDate;
     private Date executionDate;
-    private int customerId;
-    private int unitId;
-    private int paymentMethodId;
+    private int subscriptionId;
 
     public enum Type {
         BOOK,

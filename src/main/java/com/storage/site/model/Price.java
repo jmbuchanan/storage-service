@@ -1,16 +1,12 @@
 package com.storage.site.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class Price {
 
-    private int id;
-    private String stripeId;
-    private int price;
+    private final int id;
+    private final String stripeId;
+    private final int price;
 
 }

@@ -18,11 +18,8 @@ public class TransactionDao {
 
     private static final String INSERT_TRANSACTION =
             "INSERT INTO transactions " +
-                    "(transaction_type, request_date, execution_date, customer_id, unit_id, payment_method_id) " +
-                    "VALUES (?::transaction_type, ?, ?, ?, ?, ?)";
-
-    private static final String SELECT_TRANSACTIONS_WHERE_EXECUTION_DATE_IS_TODAY =
-            "SELECT * FROM transactions WHERE execution_date = CURRENT_DATE";
+                    "(transaction_type, request_date, execution_date) " +
+                    "VALUES (?::transaction_type, ?, ?)";
 
     public TransactionDao(JdbcTemplate jdbcTemplate, TransactionRowMapper transactionRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -37,14 +34,7 @@ public class TransactionDao {
         jdbcTemplate.update(INSERT_TRANSACTION,
                 transaction.getType().toString().toUpperCase(),
                 transaction.getRequestDate(),
-                transaction.getExecutionDate(),
-                transaction.getCustomerId(),
-                transaction.getUnitId(),
-                transaction.getPaymentMethodId());
+                transaction.getExecutionDate()
+        );
     }
-
-    public List<Transaction> fetchTransactionsExecutedToday() {
-        return jdbcTemplate.query(SELECT_TRANSACTIONS_WHERE_EXECUTION_DATE_IS_TODAY, transactionRowMapper);
-    }
-
 }

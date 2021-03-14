@@ -61,13 +61,19 @@ CREATE TABLE IF NOT EXISTS payment_methods (
     customer_id integer references customers(id)
 );
 
+CREATE TABLE IF NOT EXISTS subscriptions (
+    id serial PRIMARY KEY,
+    stripe_id varchar(255),
+    customer_id integer REFERENCES customers(id),
+    unit_id integer REFERENCES units(id),
+    payment_method_id integer REFERENCES payment_methods(id)
+);
+
 CREATE TABLE IF NOT EXISTS transactions (
     id serial PRIMARY KEY,
     transaction_type transaction_type,
     request_date date,
     execution_date date,
-    customer_id integer REFERENCES customers(id),
-    unit_id integer REFERENCES units(id),
-    payment_method_id integer REFERENCES payment_methods(id)
+    subscription_id integer REFERENCES subscriptions(id)
 );
 

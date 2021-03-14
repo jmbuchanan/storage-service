@@ -5,7 +5,7 @@ containerId=$(docker ps -a -q --filter ancestor=$IMAGE_NAME --format="{{.ID}}" 2
 imageId=$(docker images -q $IMAGE_NAME 2> /dev/null)
 
 #stop running local-postgres containers
-if [ $containerId != "" ]; then
+if [[ $containerId != "" ]]; then
   docker stop $containerId > /dev/null
 fi
 
