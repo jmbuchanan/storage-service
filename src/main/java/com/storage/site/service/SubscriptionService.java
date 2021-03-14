@@ -1,12 +1,12 @@
 package com.storage.site.service;
 
 import com.storage.site.dao.SubscriptionDao;
+import com.storage.site.dao.SubscriptionParamsDao;
 import com.storage.site.dto.BookRequest;
 import com.storage.site.model.*;
 import com.stripe.exception.StripeException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -17,42 +17,40 @@ import java.util.*;
 public class SubscriptionService {
 
     final private SubscriptionDao subscriptionDao;
+    final private SubscriptionParamsDao subscriptionParamsDao;
 
-    private static final String EVERY_MIDNIGHT_CRON = "0 0 0 * * ?";
-
-    @Scheduled(cron = EVERY_MIDNIGHT_CRON)
-    public void batchProcessTransactions() throws StripeException {
-        List<Subscription> subscriptions = subscriptionDao.fetchSubscriptionsForExecutionToday();
-        log.info(String.format("%s subscriptions to be executed today", subscriptions.size()));
-        for (Subscription subscription: subscriptions) {
-            process(subscription);
+    public void processSubscriptionExecution() throws StripeException {
+        List<SubscriptionParams> subscriptionParamsList = subscriptionParamsDao.fetchSubscriptionParamsForExecutionToday();
+        log.info(String.format("%s subscriptions to be executed today", subscriptionParamsList.size()));
+        for (SubscriptionParams subscriptionParams: subscriptionParamsList) {
+            process(subscriptionParams);
         }
     }
 
-    private void process(Subscription subscription) throws StripeException {
-        if (subscription.getTransactionType().equals(Transaction.Type.BOOK)) {
+    private void process(SubscriptionParams params) throws StripeException {
+        if (params.getTransactionType().equals(Transaction.Type.BOOK)) {
             log.info("transaction book unit");
-            com.stripe.model.Subscription stripeSubscription = makeSubscription(subscription);
-            subscriptionDao.updateSubscriptionStripeId(stripeSubscription.getId(), subscription.getId());
-        } else if (subscription.getTransactionType().equals(Transaction.Type.CANCEL)) {
+            com.stripe.model.Subscription stripeSubscription = makeSubscription(params);
+            subscriptionDao.updateSubscriptionStripeId(stripeSubscription.getId(), params.getId());
+        } else if (params.getTransactionType().equals(Transaction.Type.CANCEL)) {
             log.info("transaction cancel sub");
-            cancelSubscription(subscription);
+            cancelSubscription(params);
         }
     }
 
-    private com.stripe.model.Subscription makeSubscription(Subscription subscription) throws StripeException {
+    private com.stripe.model.Subscription makeSubscription(SubscriptionParams subParams) throws StripeException {
         Map<String, Object> params = new HashMap<>();
-        params.put("customer", subscription.getStripeCustomerId());
-        params.put("default_payment_method", subscription.getStripePaymentMethodId());
-        params.put("items", makeItemForPrice(subscription));
+        params.put("customer", subParams.getStripeCustomerId());
+        params.put("default_payment_method", subParams.getStripePaymentMethodId());
+        params.put("items", makeItemFromPrice(subParams));
         params.put("billing_cycle_anchor", firstDayOfNextMonth());
         return com.stripe.model.Subscription.create(params);
     }
 
-    private List<Object> makeItemForPrice(Subscription subscription) {
+    private List<Object> makeItemFromPrice(SubscriptionParams subParams) {
         List<Object> items = new ArrayList<>();
         Map<String, Object> price = new HashMap<>();
-        price.put("price", subscription.getStripePriceId());
+        price.put("price", subParams.getStripePriceId());
         items.add(price);
         return items;
     }
@@ -64,7 +62,7 @@ public class SubscriptionService {
         return calendar.getTime();
     }
 
-    private void cancelSubscription(Subscription subscription) {
+    private void cancelSubscription(SubscriptionParams subParams) {
         System.out.println("Cancel subscription to be implemented");
     }
 

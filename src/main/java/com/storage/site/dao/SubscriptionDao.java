@@ -18,29 +18,8 @@ public class SubscriptionDao {
             "INSERT INTO subscriptions (customer_id, unit_id, payment_method_id) " +
                     "VALUES (?, ?, ?)";
 
-    private static final String SELECT_SUBSCRIPTIONS_WITH_TRANSACTION_EXECUTION_TODAY =
-                "SELECT s.id as id, " +
-                    "  t.transaction_type as transaction_type, " +
-                    "  s.stripe_id as stripe_id, " +
-                    "  c.stripe_id as stripe_customer_id, " +
-                    "  p.stripe_id as stripe_price_id, " +
-                    "  pm.stripe_id as stripe_payment_method_id " +
-                    "FROM transactions t " +
-                    "LEFT JOIN subscriptions s " +
-                    "  ON s.id = t.subscription_id " +
-                    "LEFT JOIN customers c " +
-                    "  ON c.id = s.customer_id " +
-                    "LEFT JOIN payment_methods pm " +
-                    "  ON pm.id = s.payment_method_id " +
-                    "LEFT JOIN units u " +
-                    "  ON u.id = s.unit_id " +
-                    "LEFT JOIN prices p " +
-                    "  ON p.id = u.price_id " +
-                    "WHERE t.execution_date = CURRENT_DATE"
-            ;
-
     static final private String SELECT_SUBSCRIPTION_BY_CUSTOMER_UNIT_AND_PAYMENT_METHOD =
-            "SELECT id " +
+            "SELECT * " +
                     "FROM subscriptions " +
                     "WHERE customer_id = ? " +
                     "  AND unit_id = ? " +
@@ -57,10 +36,6 @@ public class SubscriptionDao {
     public SubscriptionDao(JdbcTemplate jdbcTemplate, SubscriptionRowMapper subscriptionRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.subscriptionRowMapper = subscriptionRowMapper;
-    }
-
-    public List<Subscription> fetchSubscriptionsForExecutionToday() {
-        return jdbcTemplate.query(SELECT_SUBSCRIPTIONS_WITH_TRANSACTION_EXECUTION_TODAY, subscriptionRowMapper);
     }
 
     public void insertSubscription(BookRequest bookRequest, int unitId) {

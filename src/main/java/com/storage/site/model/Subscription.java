@@ -1,18 +1,16 @@
 package com.storage.site.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
 @AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
 public class Subscription {
 
     private int id;
-    private Transaction.Type transactionType;
     private String stripeId;
-    private String stripeCustomerId;
-    private String stripePriceId;
-    private String stripePaymentMethodId;
+    private int customerId;
+    private int unitId;
+    private int paymentMethodId;
 
 }

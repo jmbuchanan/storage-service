@@ -5,7 +5,6 @@ import com.storage.site.dto.BookRequest;
 import com.storage.site.model.*;
 import com.storage.site.util.DateUtil;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Subscription;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,6 +20,12 @@ public class TransactionService {
     private final TransactionDao transactionDao;
     final private SubscriptionService subscriptionService;
 
+    private static final String EVERY_MIDNIGHT_CRON = "0 0 0 * * ?";
+
+    @Scheduled(cron = EVERY_MIDNIGHT_CRON)
+    public void batchProcessTransactions() throws StripeException {
+        subscriptionService.processSubscriptionExecution();
+    }
     public void insertPendingTransaction(BookRequest bookRequest, int unitNumber) throws StripeException {
         subscriptionService.insertSubscription(bookRequest, unitNumber);
         int subscriptionId = subscriptionService.getSubscriptionId(bookRequest, unitNumber);
