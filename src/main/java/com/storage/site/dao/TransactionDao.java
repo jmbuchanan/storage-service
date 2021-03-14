@@ -18,8 +18,8 @@ public class TransactionDao {
 
     private static final String INSERT_TRANSACTION =
             "INSERT INTO transactions " +
-                    "(transaction_type, request_date, execution_date) " +
-                    "VALUES (?::transaction_type, ?, ?)";
+                    "(transaction_type, request_date, execution_date, subscription_id) " +
+                    "VALUES (?::transaction_type, ?, ?, ?)";
 
     public TransactionDao(JdbcTemplate jdbcTemplate, TransactionRowMapper transactionRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -34,7 +34,8 @@ public class TransactionDao {
         jdbcTemplate.update(INSERT_TRANSACTION,
                 transaction.getType().toString().toUpperCase(),
                 transaction.getRequestDate(),
-                transaction.getExecutionDate()
+                transaction.getExecutionDate(),
+                transaction.getSubscriptionId()
         );
     }
 }

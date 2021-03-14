@@ -18,20 +18,13 @@ public class SubscriptionService {
 
     final private SubscriptionDao subscriptionDao;
 
-    private static final String EVERY_MIDNIGHT_CRON = "0 * * * * ?";
+    private static final String EVERY_MIDNIGHT_CRON = "0 0 0 * * ?";
 
     @Scheduled(cron = EVERY_MIDNIGHT_CRON)
     public void batchProcessTransactions() throws StripeException {
         List<Subscription> subscriptions = subscriptionDao.fetchSubscriptionsForExecutionToday();
         log.info(String.format("%s subscriptions to be executed today", subscriptions.size()));
         for (Subscription subscription: subscriptions) {
-            log.info("processing subscription " + subscription.getId());
-            log.info(String.valueOf(subscription.getId()));
-            log.info(subscription.getStripeId());
-            log.info(subscription.getStripeCustomerId());
-            log.info(subscription.getStripePriceId());
-            log.info(subscription.getStripePaymentMethodId());
-
             process(subscription);
         }
     }

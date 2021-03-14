@@ -36,7 +36,7 @@ public class SubscriptionDao {
                     "  ON u.id = s.unit_id " +
                     "LEFT JOIN prices p " +
                     "  ON p.id = u.price_id " +
-                    "WHERE t.execution_date = CURRENT_DATE + 1"
+                    "WHERE t.execution_date = CURRENT_DATE"
             ;
 
     static final private String SELECT_SUBSCRIPTION_BY_CUSTOMER_UNIT_AND_PAYMENT_METHOD =
@@ -49,8 +49,8 @@ public class SubscriptionDao {
 
     private static final String UPDATE_SUBSCRIPTION_STRIPE_ID =
             "UPDATE subscriptions " +
-                    "SET subscriptions.stripe_id = ? " +
-                    "WHERE subscriptions.id = ? "
+                    "SET stripe_id = ? " +
+                    "WHERE id = ? "
             ;
 
 
