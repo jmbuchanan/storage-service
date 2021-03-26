@@ -19,13 +19,23 @@ public class TransactionService {
 
     private final TransactionDao transactionDao;
     final private SubscriptionService subscriptionService;
+    final private CustomerService customerService;
+    final private PaymentMethodService paymentMethodService;
+    final private UnitService unitService;
+    final private PriceService priceService;
 
     private static final String EVERY_MIDNIGHT_CRON = "0 0 0 * * ?";
 
     @Scheduled(cron = EVERY_MIDNIGHT_CRON)
-    public void batchProcessTransactions() throws StripeException {
-        subscriptionService.processSubscriptionExecution();
+    public void processPendingTransactions() throws StripeException {
+        List<Transaction> transactions = transactionDao.fetchPendingTransactions();
+        log.info(String.format("%s transactions to be executed today", transactions.size()));
+        for (Transaction transaction : transactions) {
+            process(transaction);
+        }
     }
+
+
     public void insertPendingTransaction(BookRequest bookRequest, int unitNumber) throws StripeException {
         subscriptionService.insertSubscription(bookRequest, unitNumber);
         int subscriptionId = subscriptionService.getSubscriptionId(bookRequest, unitNumber);
@@ -40,7 +50,61 @@ public class TransactionService {
         transactionDao.insert(transaction);
     }
 
+    public void insertCancelTransaction(int unitNumber) {
+    }
+
     public List<Transaction> getAllTransactions() {
         return transactionDao.fetchAll();
     }
+
+    private void process(Transaction transaction) {
+        if (transaction.getType().equals(Transaction.Type.BOOK)) {
+            processBookTransaction(transaction);
+        } else if (transaction.getType().equals(Transaction.Type.CANCEL)) {
+            processCancelTransaction(transaction);
+        }
+    }
+
+    private void processBookTransaction(Transaction transaction) {
+        Subscription subscription = subscriptionService.getSubscriptionById(transaction.getSubscriptionId());
+        Customer customer = customerService.getCustomerById(subscription.getCustomerId());
+        PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(subscription.getPaymentMethodId());
+        Unit unit = unitService.getUnitById(subscription.getUnitId());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("customer", customer.getStripeId());
+        params.put("default_payment_method", paymentMethod.getStripeId());
+        params.put("items", makeItemFromPrice(unit.getPriceId()));
+        params.put("billing_cycle_anchor", firstDayOfNextMonth());
+        try {
+            com.stripe.model.Subscription stripeSubscription =
+                com.stripe.model.Subscription.create(params);
+            subscriptionService.updateSubscriptionStripeId(subscription.getId(), stripeSubscription.getId());
+        } catch (StripeException se) {
+            se.getMessage();
+        }
+    }
+
+    private List<Object> makeItemFromPrice(int priceId) {
+        Price price = priceService.getPriceById(priceId);
+        List<Object> items = new ArrayList<>();
+        Map<String, Object> priceMap = new HashMap<>();
+        priceMap.put("price", price.getStripeId());
+        items.add(priceMap);
+        return items;
+    }
+
+    private Date firstDayOfNextMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+        return calendar.getTime();
+    }
+
+    private void processCancelTransaction(Transaction transaction) {
+
+    }
+
 }
+
+ 

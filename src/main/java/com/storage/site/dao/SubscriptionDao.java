@@ -32,6 +32,12 @@ public class SubscriptionDao {
                     "WHERE id = ? "
             ;
 
+    private static final String SELECT_SUBSCRIPTION_BY_ID =
+            "SELECT * " +
+                    "FROM subscriptions " +
+                    "WHERE id = ? "
+            ;
+
 
     public SubscriptionDao(JdbcTemplate jdbcTemplate, SubscriptionRowMapper subscriptionRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -50,7 +56,12 @@ public class SubscriptionDao {
         return result.get(0).getId();
     }
 
-    public void updateSubscriptionStripeId(String stripeId, int subscriptionId) {
+    public void updateSubscriptionStripeId(int subscriptionId, String stripeId) {
         jdbcTemplate.update(UPDATE_SUBSCRIPTION_STRIPE_ID, stripeId, subscriptionId);
+    }
+
+    public Subscription fetchSubscriptionById(int id) {
+        List<Subscription> subscriptions = jdbcTemplate.query(SELECT_SUBSCRIPTION_BY_ID, new Object[] {id}, subscriptionRowMapper);
+        return subscriptions.get(0);
     }
 }

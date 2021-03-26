@@ -21,6 +21,12 @@ public class TransactionDao {
                     "(transaction_type, request_date, execution_date, subscription_id) " +
                     "VALUES (?::transaction_type, ?, ?, ?)";
 
+    private static final String SELECT_PENDING_TRANSACTIONS =
+            "SELECT * " +
+                    "FROM transactions " +
+                    "WHERE execution_date = CURRENT_DATE "
+            ;
+
     public TransactionDao(JdbcTemplate jdbcTemplate, TransactionRowMapper transactionRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.transactionRowMapper = transactionRowMapper;
@@ -37,5 +43,9 @@ public class TransactionDao {
                 transaction.getExecutionDate(),
                 transaction.getSubscriptionId()
         );
+    }
+
+    public List<Transaction> fetchPendingTransactions() {
+        return jdbcTemplate.query(SELECT_PENDING_TRANSACTIONS, transactionRowMapper);
     }
 }

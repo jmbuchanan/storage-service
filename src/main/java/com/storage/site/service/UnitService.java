@@ -19,7 +19,7 @@ public class UnitService {
         return unitDao.fetchAll();
     }
 
-    public Unit fetchUnitById(int id) {
+    public Unit getUnitById(int id) {
         return unitDao.fetchUnitById(id);
     }
 
