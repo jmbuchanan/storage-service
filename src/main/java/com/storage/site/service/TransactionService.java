@@ -37,8 +37,7 @@ public class TransactionService {
 
 
     public void insertPendingTransaction(BookRequest bookRequest, int unitNumber) throws StripeException {
-        subscriptionService.insertSubscription(bookRequest, unitNumber);
-        int subscriptionId = subscriptionService.getSubscriptionId(bookRequest, unitNumber);
+        int subscriptionId = subscriptionService.insertSubscription(bookRequest, unitNumber);
         //0 id gets overwritten when added to db
         Transaction transaction = new Transaction(
                 0,

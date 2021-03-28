@@ -14,8 +14,8 @@ public class SubscriptionService {
 
     final private SubscriptionDao subscriptionDao;
 
-    public void insertSubscription(BookRequest bookRequest, int unitNumber) {
-        subscriptionDao.insertSubscription(bookRequest, unitNumber);
+    public int insertSubscription(BookRequest bookRequest, int unitNumber) {
+        return subscriptionDao.insertSubscription(bookRequest, unitNumber);
     }
 
     public int getSubscriptionId(BookRequest bookRequest, int unitId) {
