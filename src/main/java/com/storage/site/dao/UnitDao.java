@@ -28,7 +28,7 @@ public class UnitDao {
     private static final String UPDATE_CUSTOMER_FOR_UNIT =
             "UPDATE units SET customer_id = ? WHERE id = ?";
 
-    private static final String SET_CUSTOMER_TO_NULL_FOR_UNIT =
+    private static final String SET_UNIT_CUSTOMER_TO_NULL =
             "UPDATE units SET customer_id = null WHERE id = ?";
 
 
@@ -59,7 +59,7 @@ public class UnitDao {
         jdbcTemplate.update(UPDATE_CUSTOMER_FOR_UNIT, customerId, unitId);
     }
 
-    public void setCustomerToNullForUnit(int unitId) {
-        jdbcTemplate.update(SET_CUSTOMER_TO_NULL_FOR_UNIT, unitId);
+    public void setUnitCustomerToNull(int unitId) {
+        jdbcTemplate.update(SET_UNIT_CUSTOMER_TO_NULL, unitId);
     }
 }

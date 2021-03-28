@@ -37,7 +37,7 @@ public class UnitService {
     }
 
     public void cancelSubscription(int unitNumber) {
-        unitDao.setCustomerToNullForUnit(unitNumber);
+        unitDao.setUnitCustomerToNull(unitNumber);
     }
 
 

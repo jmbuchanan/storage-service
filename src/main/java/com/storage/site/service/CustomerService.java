@@ -34,7 +34,6 @@ public class CustomerService {
     }
 
     public Customer register(Customer customer) {
-
         Map<String, Object> customerParams = new HashMap<>();
         customerParams.put("email", customer.getEmail());
         com.stripe.model.Customer stripeCustomer;
@@ -51,10 +50,9 @@ public class CustomerService {
         customer.setDateJoined(new Date());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
 
-        log.info("Inserting new customer record into database");
-        customerDao.insertCustomer(customer);
+        int customerId = customerDao.insertCustomer(customer);
+        customer.setId(customerId);
 
-        log.info("Querying record to return database generated customer ID");
-        return customerDao.getCustomerByEmail(customer.getEmail());
+        return customer;
     }
 }
