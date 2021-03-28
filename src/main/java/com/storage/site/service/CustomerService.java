@@ -50,8 +50,7 @@ public class CustomerService {
         customer.setDateJoined(new Date());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
 
-        int customerId = customerDao.insertCustomer(customer);
-        customer.setId(customerId);
+        customerDao.insertCustomer(customer);
 
         return customer;
     }
