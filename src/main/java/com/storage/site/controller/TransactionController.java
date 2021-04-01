@@ -1,6 +1,7 @@
 package com.storage.site.controller;
 
 import com.storage.site.dto.BookRequest;
+import com.storage.site.dto.CancelRequest;
 import com.storage.site.model.Transaction;
 import com.storage.site.model.Unit;
 import com.storage.site.service.ExcelService;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -38,9 +40,9 @@ public class TransactionController {
         }
     }
 
-    @PutMapping("/cancel/{id}")
-    public ResponseEntity<String> cancelSubscription(@PathVariable int id) {
-        unitService.cancelSubscription(id);
+    @PutMapping("/cancel")
+    public ResponseEntity<String> cancel(@RequestBody CancelRequest cancelRequest, HttpServletRequest httpRequest) {
+        transactionService.insertCancelTransaction(cancelRequest, httpRequest);
         return new ResponseEntity<>("Resource updated", HttpStatus.OK);
     }
 

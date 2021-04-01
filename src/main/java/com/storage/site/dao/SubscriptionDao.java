@@ -25,8 +25,8 @@ public class SubscriptionDao {
     final private SubscriptionRowMapper subscriptionRowMapper;
 
     private static final String INSERT_SUBSCRIPTION =
-            "INSERT INTO subscriptions (customer_id, unit_id, payment_method_id) " +
-                    "VALUES (:customer_id, :unit_id, :payment_method_id) " +
+            "INSERT INTO subscriptions (is_active, customer_id, unit_id, payment_method_id) " +
+                    "VALUES (:is_active, :customer_id, :unit_id, :payment_method_id) " +
                     "RETURNING id";
 
     static final private String SELECT_SUBSCRIPTION_BY_CUSTOMER_UNIT_AND_PAYMENT_METHOD =
@@ -37,9 +37,10 @@ public class SubscriptionDao {
                     "  AND payment_method_id = ? "
             ;
 
-    private static final String UPDATE_SUBSCRIPTION_STRIPE_ID =
+    private static final String UPDATE_SUBSCRIPTION_STRIPE_ID_AND_SET_TO_ACTIVE =
             "UPDATE subscriptions " +
-                    "SET stripe_id = ? " +
+                    "SET stripe_id = ?, " +
+                    "SET is_active = true, " +
                     "WHERE id = ? "
             ;
 
@@ -49,9 +50,23 @@ public class SubscriptionDao {
                     "WHERE id = ? "
             ;
 
+    public static final String SELECT_SUBSCRIPTION_BY_CUSTOMER_AND_UNIT =
+            "SELECT * " +
+                    "FROM subscriptions " +
+                    "WHERE customer_id = ? " +
+                    "AND unit_id = ? "
+            ;
+
+    public static final String UPDATE_SUBSCRIPTION_TO_INACTIVE_BY_ID =
+            "UPDATE subscriptions " +
+                    "SET is_active = false " +
+                    "WHERE id = ? "
+            ;
+
     public int insertSubscription(BookRequest bookRequest, int unitId) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        Map<String, Integer> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
+        params.put("is_active", false);
         params.put("customer_id", bookRequest.getCustomerId());
         params.put("unit_id", unitId);
         params.put("payment_method_id", bookRequest.getCardId());
@@ -67,11 +82,21 @@ public class SubscriptionDao {
     }
 
     public void updateSubscriptionStripeId(int subscriptionId, String stripeId) {
-        jdbcTemplate.update(UPDATE_SUBSCRIPTION_STRIPE_ID, stripeId, subscriptionId);
+        jdbcTemplate.update(UPDATE_SUBSCRIPTION_STRIPE_ID_AND_SET_TO_ACTIVE, stripeId, subscriptionId);
     }
 
     public Subscription fetchSubscriptionById(int id) {
         List<Subscription> subscriptions = jdbcTemplate.query(SELECT_SUBSCRIPTION_BY_ID, new Object[] {id}, subscriptionRowMapper);
         return subscriptions.get(0);
+    }
+
+    public Subscription getSubscriptionByCustomerAndUnit(int customerId, int unitId) {
+        List<Subscription> result = jdbcTemplate.query(SELECT_SUBSCRIPTION_BY_CUSTOMER_AND_UNIT,
+                new Object[] {customerId, unitId}, subscriptionRowMapper);
+        return result.get(0);
+    }
+
+    public void setSubscriptionToInactive(int id) {
+        jdbcTemplate.update(UPDATE_SUBSCRIPTION_TO_INACTIVE_BY_ID, id);
     }
 }

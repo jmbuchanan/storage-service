@@ -2,14 +2,17 @@ package com.storage.site.service;
 
 import com.storage.site.dao.TransactionDao;
 import com.storage.site.dto.BookRequest;
+import com.storage.site.dto.CancelRequest;
 import com.storage.site.model.*;
 import com.storage.site.util.DateUtil;
+import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Service
@@ -18,6 +21,7 @@ import java.util.*;
 public class TransactionService {
 
     private final TransactionDao transactionDao;
+    final private JwtService jwtService;
     final private SubscriptionService subscriptionService;
     final private CustomerService customerService;
     final private PaymentMethodService paymentMethodService;
@@ -36,7 +40,7 @@ public class TransactionService {
     }
 
 
-    public void insertPendingTransaction(BookRequest bookRequest, int unitNumber) throws StripeException {
+    public void insertPendingTransaction(BookRequest bookRequest, int unitNumber) {
         int subscriptionId = subscriptionService.insertSubscription(bookRequest, unitNumber);
         //0 id gets overwritten when added to db
         Transaction transaction = new Transaction(
@@ -49,14 +53,24 @@ public class TransactionService {
         transactionDao.insert(transaction);
     }
 
-    public void insertCancelTransaction(int unitNumber) {
+    public void insertCancelTransaction(CancelRequest cancelRequest, HttpServletRequest httpRequest) {
+        int customerId = jwtService.parseCustomerId(httpRequest);
+        Subscription subscription = subscriptionService.getSubscriptionByCustomerAndUnit(customerId, cancelRequest.getUnitId());
+        Transaction transaction = new Transaction(
+                0,
+                Transaction.Type.CANCEL,
+                new Date(),
+                DateUtil.stringToDate(cancelRequest.getExecutionDate()),
+                subscription.getId()
+        );
+        transactionDao.insert(transaction);
     }
 
     public List<Transaction> getAllTransactions() {
         return transactionDao.fetchAll();
     }
 
-    private void process(Transaction transaction) {
+    private void process(Transaction transaction) throws StripeException {
         if (transaction.getType().equals(Transaction.Type.BOOK)) {
             processBookTransaction(transaction);
         } else if (transaction.getType().equals(Transaction.Type.CANCEL)) {
@@ -100,10 +114,18 @@ public class TransactionService {
         return calendar.getTime();
     }
 
-    private void processCancelTransaction(Transaction transaction) {
-
+    private void processCancelTransaction(Transaction transaction) throws StripeException {
+        Subscription subscription = subscriptionService.getSubscriptionById(transaction.getSubscriptionId());
+        cancelStripeSubscription(subscription);
+        subscriptionService.setSubscriptionToInactive(subscription);
+        unitService.setUnitCustomerToNull(subscription.getUnitId());
     }
 
+    private void cancelStripeSubscription(Subscription subscription) throws StripeException {
+        com.stripe.model.Subscription stripeSubscription =
+                com.stripe.model.Subscription.retrieve(subscription.getStripeId());
+        stripeSubscription.cancel();
+    }
 }
 
  

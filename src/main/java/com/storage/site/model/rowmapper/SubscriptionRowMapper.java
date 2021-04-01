@@ -15,6 +15,7 @@ public class SubscriptionRowMapper implements RowMapper<Subscription> {
             return new Subscription(
                     rs.getInt("id"),
                     rs.getString("stripe_id"),
+                    rs.getBoolean("is_active"),
                     rs.getInt("customer_id"),
                     rs.getInt("unit_id"),
                     rs.getInt("payment_method_id")

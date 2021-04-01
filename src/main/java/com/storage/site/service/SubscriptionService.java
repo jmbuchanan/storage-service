@@ -22,11 +22,19 @@ public class SubscriptionService {
         return subscriptionDao.getSubscriptionId(bookRequest, unitId);
     }
 
+    public void setSubscriptionToInactive(Subscription subscription) {
+        subscriptionDao.setSubscriptionToInactive(subscription.getId());
+    }
+
     public Subscription getSubscriptionById(int id) {
         return subscriptionDao.fetchSubscriptionById(id);
     }
 
     public void updateSubscriptionStripeId(int id, String stripeId) {
         subscriptionDao.updateSubscriptionStripeId(id, stripeId);
+    }
+
+    public Subscription getSubscriptionByCustomerAndUnit(int customerId, int unitId) {
+        return subscriptionDao.getSubscriptionByCustomerAndUnit(customerId, unitId);
     }
 }

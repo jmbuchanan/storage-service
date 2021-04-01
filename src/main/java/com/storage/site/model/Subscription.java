@@ -9,6 +9,7 @@ public class Subscription {
 
     private int id;
     private String stripeId;
+    private boolean isActive;
     private int customerId;
     private int unitId;
     private int paymentMethodId;

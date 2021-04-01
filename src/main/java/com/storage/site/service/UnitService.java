@@ -36,9 +36,7 @@ public class UnitService {
         log.info(String.format("Unit %s booked for customer %s", unitId, customerId));
     }
 
-    public void cancelSubscription(int unitNumber) {
+    public void setUnitCustomerToNull(int unitNumber) {
         unitDao.setUnitCustomerToNull(unitNumber);
     }
-
-
 }

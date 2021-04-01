@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS payment_methods (
 CREATE TABLE IF NOT EXISTS subscriptions (
     id serial PRIMARY KEY,
     stripe_id varchar(255),
+    is_active boolean,
     customer_id integer REFERENCES customers(id),
     unit_id integer REFERENCES units(id),
     payment_method_id integer REFERENCES payment_methods(id)
