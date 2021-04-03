@@ -5,7 +5,6 @@ import com.storage.site.dto.BookRequest;
 import com.storage.site.dto.CancelRequest;
 import com.storage.site.model.*;
 import com.storage.site.util.DateUtil;
-import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,17 +39,25 @@ public class TransactionService {
     }
 
 
-    public void insertPendingTransaction(BookRequest bookRequest, int unitNumber) {
-        int subscriptionId = subscriptionService.insertSubscription(bookRequest, unitNumber);
-        //0 id gets overwritten when added to db
-        Transaction transaction = new Transaction(
-                0,
-                Transaction.Type.BOOK,
-                new Date(),
-                DateUtil.stringToDate(bookRequest.getStartDate()),
-                subscriptionId
-        );
-        transactionDao.insert(transaction);
+    public boolean insertPendingTransaction(BookRequest bookRequest, HttpServletRequest request) {
+        Unit unit = unitService.getOneUnitForPrice(Integer.parseInt(bookRequest.getUnitSize()));
+        if (unit != null) {
+            int customerId = jwtService.parseCustomerId(request);
+            int subscriptionId = subscriptionService.insertSubscription(customerId, unit.getUnitNumber(), bookRequest.getCardId());
+            //0 id gets overwritten when added to db
+            Transaction transaction = new Transaction(
+                    0,
+                    Transaction.Type.BOOK,
+                    new Date(),
+                    DateUtil.stringToDate(bookRequest.getStartDate()),
+                    subscriptionId
+            );
+            transactionDao.insert(transaction);
+            unitService.updateCustomerOfUnit(customerId, unit.getUnitNumber());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void insertCancelTransaction(CancelRequest cancelRequest, HttpServletRequest httpRequest) {

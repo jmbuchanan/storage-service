@@ -29,14 +29,6 @@ public class SubscriptionDao {
                     "VALUES (:is_active, :customer_id, :unit_id, :payment_method_id) " +
                     "RETURNING id";
 
-    static final private String SELECT_SUBSCRIPTION_BY_CUSTOMER_UNIT_AND_PAYMENT_METHOD =
-            "SELECT * " +
-                    "FROM subscriptions " +
-                    "WHERE customer_id = ? " +
-                    "  AND unit_id = ? " +
-                    "  AND payment_method_id = ? "
-            ;
-
     private static final String UPDATE_SUBSCRIPTION_STRIPE_ID_AND_SET_TO_ACTIVE =
             "UPDATE subscriptions " +
                     "SET stripe_id = ?, " +
@@ -63,22 +55,15 @@ public class SubscriptionDao {
                     "WHERE id = ? "
             ;
 
-    public int insertSubscription(BookRequest bookRequest, int unitId) {
+    public int insertSubscription(int customerId, int unitId, int cardId) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         Map<String, Object> params = new HashMap<>();
         params.put("is_active", false);
-        params.put("customer_id", bookRequest.getCustomerId());
+        params.put("customer_id", customerId);
         params.put("unit_id", unitId);
-        params.put("payment_method_id", bookRequest.getCardId());
+        params.put("payment_method_id", cardId);
         SqlParameterSource paramSource = new MapSqlParameterSource(params);
         return namedParameterJdbcTemplate.update(INSERT_SUBSCRIPTION, paramSource, keyHolder, new String[] {"id"});
-    }
-
-    public int getSubscriptionId(BookRequest bookRequest, int unitId) {
-        List<Subscription> result = jdbcTemplate.query(SELECT_SUBSCRIPTION_BY_CUSTOMER_UNIT_AND_PAYMENT_METHOD,
-                new Object[] {bookRequest.getCustomerId(), unitId, bookRequest.getCardId()},
-                subscriptionRowMapper);
-        return result.get(0).getId();
     }
 
     public void updateSubscriptionStripeId(int subscriptionId, String stripeId) {

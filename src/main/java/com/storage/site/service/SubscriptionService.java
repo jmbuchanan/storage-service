@@ -14,12 +14,8 @@ public class SubscriptionService {
 
     final private SubscriptionDao subscriptionDao;
 
-    public int insertSubscription(BookRequest bookRequest, int unitNumber) {
-        return subscriptionDao.insertSubscription(bookRequest, unitNumber);
-    }
-
-    public int getSubscriptionId(BookRequest bookRequest, int unitId) {
-        return subscriptionDao.getSubscriptionId(bookRequest, unitId);
+    public int insertSubscription(int customerId, int unitId, int cardId) {
+        return subscriptionDao.insertSubscription(customerId, unitId, cardId);
     }
 
     public void setSubscriptionToInactive(Subscription subscription) {

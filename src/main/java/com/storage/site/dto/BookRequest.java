@@ -10,11 +10,4 @@ public class BookRequest {
     private final String unitSize;
     private final String startDate;
     private final int cardId;
-    private final int customerId;
-
-    @Override
-    public String toString() {
-        String size = unitSize.equals("0") ? "small" : "large";
-        return String.format("Booking request from customer %s for %s unit on date %s with card id %s", customerId, size, startDate, cardId);
-    }
 }

@@ -3,10 +3,8 @@ package com.storage.site.controller;
 import com.storage.site.dto.BookRequest;
 import com.storage.site.dto.CancelRequest;
 import com.storage.site.model.Transaction;
-import com.storage.site.model.Unit;
 import com.storage.site.service.ExcelService;
 import com.storage.site.service.TransactionService;
-import com.storage.site.service.UnitService;
 import com.stripe.exception.StripeException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,16 +22,12 @@ import java.util.List;
 public class TransactionController {
 
     private final TransactionService transactionService;
-    private final UnitService unitService;
     private final ExcelService excelService;
 
     @PostMapping("/book")
-    public ResponseEntity<String> book(@RequestBody BookRequest bookRequest) throws StripeException {
+    public ResponseEntity<String> book(@RequestBody BookRequest bookRequest, HttpServletRequest httpRequest) throws StripeException {
         log.info(bookRequest.toString());
-        Unit unit = unitService.getOneUnitForPrice(Integer.parseInt(bookRequest.getUnitSize()));
-        if (unit != null) {
-            transactionService.insertPendingTransaction(bookRequest, unit.getUnitNumber());
-            unitService.updateCustomerOfUnit(bookRequest.getCustomerId(), unit.getUnitNumber());
+        if (transactionService.insertPendingTransaction(bookRequest, httpRequest)) {
             return new ResponseEntity<>("Unit booked", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("No unit available", HttpStatus.CONFLICT);
