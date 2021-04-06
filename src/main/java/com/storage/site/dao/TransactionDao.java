@@ -24,7 +24,8 @@ public class TransactionDao {
     private static final String SELECT_PENDING_TRANSACTIONS =
             "SELECT * " +
                     "FROM transactions " +
-                    "WHERE execution_date = CURRENT_DATE "
+                    "WHERE execution_date = CURRENT_DATE " +
+                    "ORDER BY id"
             ;
 
     public TransactionDao(JdbcTemplate jdbcTemplate, TransactionRowMapper transactionRowMapper) {

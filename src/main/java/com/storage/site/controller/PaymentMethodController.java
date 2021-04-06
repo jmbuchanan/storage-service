@@ -37,10 +37,12 @@ public class PaymentMethodController {
     }
 
     @PostMapping("/addPaymentMethod")
-    public ResponseEntity<String> addPaymentMethod(@RequestBody PaymentMethod paymentMethod) throws StripeException {
+    public ResponseEntity<String> addPaymentMethod(@RequestBody PaymentMethod paymentMethod, HttpServletRequest request) throws StripeException {
         com.stripe.model.PaymentMethod stripePaymentMethod = com.stripe.model.PaymentMethod.retrieve(paymentMethod.getStripeId());
+        int customerId = jwtService.parseCustomerId(request);
+        log.info(Integer.toString(customerId));
         Map<String, Object> params = new HashMap<>();
-        Customer stripeCustomer = customerService.getCustomerById(paymentMethod.getCustomerId());
+        Customer stripeCustomer = customerService.getCustomerById(customerId);
         params.put("customer", stripeCustomer.getStripeId());
 
         stripePaymentMethod.attach(params);

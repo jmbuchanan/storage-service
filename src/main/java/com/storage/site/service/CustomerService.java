@@ -49,8 +49,10 @@ public class CustomerService {
         customer.setStripeId(stripeCustomerId);
         customer.setDateJoined(new Date());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-
         customerDao.insertCustomer(customer);
+
+        //customer is overridden here by db record to include id
+        customer = getCustomerByEmail(customer.getEmail());
 
         return customer;
     }
