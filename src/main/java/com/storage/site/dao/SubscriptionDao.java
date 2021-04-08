@@ -1,6 +1,5 @@
 package com.storage.site.dao;
 
-import com.storage.site.dto.BookRequest;
 import com.storage.site.model.Subscription;
 import com.storage.site.model.rowmapper.SubscriptionRowMapper;
 import lombok.AllArgsConstructor;
@@ -8,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +44,9 @@ public class SubscriptionDao {
             "SELECT * " +
                     "FROM subscriptions " +
                     "WHERE customer_id = ? " +
-                    "AND unit_id = ? "
+                    "AND unit_id = ? " +
+                    "ORDER BY id DESC " +
+                    "LIMIT 1"
             ;
 
     public static final String UPDATE_SUBSCRIPTION_TO_INACTIVE_BY_ID =
@@ -63,7 +63,8 @@ public class SubscriptionDao {
         params.put("unit_id", unitId);
         params.put("payment_method_id", cardId);
         SqlParameterSource paramSource = new MapSqlParameterSource(params);
-        return namedParameterJdbcTemplate.update(INSERT_SUBSCRIPTION, paramSource, keyHolder, new String[] {"id"});
+        namedParameterJdbcTemplate.update(INSERT_SUBSCRIPTION, paramSource, keyHolder, new String[] {"id"});
+        return keyHolder.getKey().intValue();
     }
 
     public void updateSubscriptionStripeId(int subscriptionId, String stripeId) {
@@ -84,4 +85,5 @@ public class SubscriptionDao {
     public void setSubscriptionToInactive(int id) {
         jdbcTemplate.update(UPDATE_SUBSCRIPTION_TO_INACTIVE_BY_ID, id);
     }
+
 }

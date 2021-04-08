@@ -29,6 +29,10 @@ public class TransactionService {
 
     private static final String EVERY_MIDNIGHT_CRON = "0 0 0 * * ?";
 
+    private static final int CANCEL_IMMEDIATELY_STATUS = 0;
+    private static final int CANCEL_IN_FUTURE_STATUS = 1;
+    private static final int NOT_ELIGIBLE_FOR_CANCEL_STATUS = 2;
+
     @Scheduled(cron = EVERY_MIDNIGHT_CRON)
     public void processPendingTransactions() throws StripeException {
         List<Transaction> transactions = transactionDao.fetchPendingTransactions();
@@ -75,6 +79,17 @@ public class TransactionService {
 
     public List<Transaction> getAllTransactions() {
         return transactionDao.fetchAll();
+    }
+
+    public int getCancelEligibilityForUnit(int id) {
+        Transaction transaction = transactionDao.fetchLatestTransactionForUnit(id);
+        if (isFutureBookRequest(transaction)) {
+            return CANCEL_IMMEDIATELY_STATUS;
+        } else if (isPastBookRequest(transaction)) {
+            return CANCEL_IN_FUTURE_STATUS;
+        } else {
+            return NOT_ELIGIBLE_FOR_CANCEL_STATUS;
+        }
     }
 
     private void process(Transaction transaction) throws StripeException {
@@ -132,6 +147,16 @@ public class TransactionService {
         com.stripe.model.Subscription stripeSubscription =
                 com.stripe.model.Subscription.retrieve(subscription.getStripeId());
         stripeSubscription.cancel();
+    }
+
+    private boolean isFutureBookRequest(Transaction transaction) {
+        return transaction.getType().equals(Transaction.Type.BOOK)
+                && transaction.getExecutionDate().after(new Date());
+    }
+
+    private boolean isPastBookRequest(Transaction transaction) {
+        return transaction.getType().equals(Transaction.Type.BOOK)
+                && transaction.getExecutionDate().before(new Date());
     }
 }
 

@@ -2,12 +2,14 @@ package com.storage.site.dao;
 
 import com.storage.site.model.Transaction;
 import com.storage.site.model.rowmapper.TransactionRowMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@AllArgsConstructor
 public class TransactionDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -28,10 +30,19 @@ public class TransactionDao {
                     "ORDER BY id"
             ;
 
-    public TransactionDao(JdbcTemplate jdbcTemplate, TransactionRowMapper transactionRowMapper) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.transactionRowMapper = transactionRowMapper;
-    }
+    private static final String UPDATE_EXECUTION_DATE_TODAY_BY_SUBSCRIPTION_ID =
+            "UPDATE transactions " +
+                    "SET execution_date = CURRENT_DATE " +
+                    "WHERE subscription_id = ? "
+            ;
+
+    private static final String SELECT_LATEST_TRANSACTION_BY_UNIT_ID =
+            "SELECT * " +
+                    "FROM transactions " +
+                    "WHERE unit_id = ? " +
+                    "ORDER BY id DESC " +
+                    "LIMIT 1 "
+            ;
 
     public List<Transaction> fetchAll() {
         return jdbcTemplate.query(SELECT_ALL_TRANSACTIONS, transactionRowMapper);
@@ -48,5 +59,15 @@ public class TransactionDao {
 
     public List<Transaction> fetchPendingTransactions() {
         return jdbcTemplate.query(SELECT_PENDING_TRANSACTIONS, transactionRowMapper);
+    }
+
+    public Transaction fetchLatestTransactionForUnit(int id) {
+        List<Transaction> transactions = jdbcTemplate.query(SELECT_LATEST_TRANSACTION_BY_UNIT_ID, new Object[] {id},
+                transactionRowMapper);
+        return transactions.get(0);
+    }
+
+    public void updateExecutionDateToTodayBySubscriptionId(int subscriptionId) {
+        jdbcTemplate.update(UPDATE_EXECUTION_DATE_TODAY_BY_SUBSCRIPTION_ID, subscriptionId);
     }
 }

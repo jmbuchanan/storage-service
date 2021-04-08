@@ -40,6 +40,11 @@ public class TransactionController {
         return new ResponseEntity<>("Resource updated", HttpStatus.OK);
     }
 
+    @GetMapping("/cancel/eligibility/{id}")
+    public int getCancelEligibilityForUnit(@PathVariable int id) {
+        return transactionService.getCancelEligibilityForUnit(id);
+    }
+
     @GetMapping("/getAllTransactions")
     public List<Transaction> getAllTransactions() {
         return transactionService.getAllTransactions();
