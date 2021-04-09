@@ -33,6 +33,8 @@ public class TransactionService {
     private static final int CANCEL_IN_FUTURE_STATUS = 1;
     private static final int NOT_ELIGIBLE_FOR_CANCEL_STATUS = 2;
 
+    private static final String JUNK_DATE_STRING = "1970-01-01";
+
     @Scheduled(cron = EVERY_MIDNIGHT_CRON)
     public void processPendingTransactions() throws StripeException {
         List<Transaction> transactions = transactionDao.fetchPendingTransactions();
@@ -41,7 +43,6 @@ public class TransactionService {
             process(transaction);
         }
     }
-
 
     public boolean insertPendingTransaction(BookRequest bookRequest, HttpServletRequest request) {
         Unit unit = unitService.getOneUnitForPrice(Integer.parseInt(bookRequest.getUnitSize()));
@@ -64,9 +65,19 @@ public class TransactionService {
         }
     }
 
-    public void insertCancelTransaction(CancelRequest cancelRequest, HttpServletRequest httpRequest) {
+    public void handleCancelRequest(CancelRequest cancelRequest, HttpServletRequest httpRequest) {
         int customerId = jwtService.parseCustomerId(httpRequest);
-        Subscription subscription = subscriptionService.getSubscriptionByCustomerAndUnit(customerId, cancelRequest.getUnitId());
+        cancelRequest.setCustomerId(customerId);
+        if (cancelRequest.isCancelImmediately()) {
+            cancelImmediately(cancelRequest);
+        } else {
+            insertCancelTransaction(cancelRequest);
+        }
+    }
+
+    public void insertCancelTransaction(CancelRequest cancelRequest) {
+        Subscription subscription = subscriptionService.getSubscriptionByCustomerAndUnit(cancelRequest.getCustomerId(),
+                cancelRequest.getUnitId());
         Transaction transaction = new Transaction(
                 0,
                 Transaction.Type.CANCEL,
@@ -75,6 +86,16 @@ public class TransactionService {
                 subscription.getId()
         );
         transactionDao.insert(transaction);
+    }
+
+    private void cancelImmediately(CancelRequest cancelRequest) {
+        Subscription subscription = subscriptionService.getSubscriptionByCustomerAndUnit(cancelRequest.getCustomerId(),
+                cancelRequest.getUnitId());
+        //gets overridden in transactionDao update statement
+        cancelRequest.setExecutionDate(JUNK_DATE_STRING);
+        insertCancelTransaction(cancelRequest);
+        transactionDao.updateExecutionDateToTodayBySubscriptionId(subscription.getId());
+        unitService.setUnitCustomerToNull(cancelRequest.getUnitId());
     }
 
     public List<Transaction> getAllTransactions() {

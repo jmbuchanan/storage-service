@@ -37,10 +37,12 @@ public class TransactionDao {
             ;
 
     private static final String SELECT_LATEST_TRANSACTION_BY_UNIT_ID =
-            "SELECT * " +
-                    "FROM transactions " +
-                    "WHERE unit_id = ? " +
-                    "ORDER BY id DESC " +
+            "SELECT t.id, transaction_type, request_date, execution_date, subscription_id " +
+                    "FROM transactions t " +
+                    "LEFT JOIN subscriptions s " +
+                    "ON t.subscription_id = s.id " +
+                    "WHERE s.unit_id = ? " +
+                    "ORDER BY t.id DESC " +
                     "LIMIT 1 "
             ;
 

@@ -2,12 +2,14 @@ package com.storage.site.dao;
 
 import com.storage.site.model.Unit;
 import com.storage.site.model.rowmapper.UnitRowMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@AllArgsConstructor
 public class UnitDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -23,19 +25,13 @@ public class UnitDao {
             "SELECT * FROM units WHERE id = ?";
 
     private static final String SELECT_AVAILABLE_UNIT_BY_PRICE =
-            "SELECT * FROM units WHERE customer_id IS NULL AND price_id = ? LIMIT 1";
+            "SELECT * FROM units WHERE customer_id IS NULL AND price_id = ? ORDER BY id ASC LIMIT 1";
 
     private static final String UPDATE_CUSTOMER_FOR_UNIT =
             "UPDATE units SET customer_id = ? WHERE id = ?";
 
     private static final String SET_UNIT_CUSTOMER_TO_NULL =
             "UPDATE units SET customer_id = null WHERE id = ?";
-
-
-    public UnitDao(JdbcTemplate jdbcTemplate, UnitRowMapper unitRowMapper) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.unitRowMapper = unitRowMapper;
-    }
 
     public List<Unit> fetchAll() {
         return jdbcTemplate.query(SELECT_ALL_UNITS, unitRowMapper);

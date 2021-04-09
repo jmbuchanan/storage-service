@@ -1,7 +1,6 @@
 package com.storage.site.service;
 
 import com.storage.site.dao.SubscriptionDao;
-import com.storage.site.dto.BookRequest;
 import com.storage.site.model.Subscription;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

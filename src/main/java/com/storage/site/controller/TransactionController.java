@@ -36,7 +36,7 @@ public class TransactionController {
 
     @PostMapping("/cancel")
     public ResponseEntity<String> cancel(@RequestBody CancelRequest cancelRequest, HttpServletRequest httpRequest) {
-        transactionService.insertCancelTransaction(cancelRequest, httpRequest);
+        transactionService.handleCancelRequest(cancelRequest, httpRequest);
         return new ResponseEntity<>("Resource updated", HttpStatus.OK);
     }
 
