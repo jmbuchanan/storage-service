@@ -30,7 +30,7 @@ public class SubscriptionDao {
     private static final String UPDATE_SUBSCRIPTION_STRIPE_ID_AND_SET_TO_ACTIVE =
             "UPDATE subscriptions " +
                     "SET stripe_id = ?, " +
-                    "SET is_active = true, " +
+                    "SET is_active = true " +
                     "WHERE id = ? "
             ;
 
