@@ -40,6 +40,11 @@ public class TransactionController {
         return new ResponseEntity<>("Resource updated", HttpStatus.OK);
     }
 
+    @PostMapping("/process")
+    public void process() throws StripeException {
+        transactionService.processPendingTransactions();
+    }
+
     @GetMapping("/cancel/eligibility/{id}")
     public int getCancelEligibilityForUnit(@PathVariable int id) {
         return transactionService.getCancelEligibilityForUnit(id);
