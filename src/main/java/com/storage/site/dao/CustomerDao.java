@@ -24,7 +24,7 @@ public class CustomerDao {
             "SELECT * FROM customers WHERE id = ?";
 
     private static final String SELECT_CUSTOMER_BY_EMAIL =
-            "SELECT * FROM customers WHERE email LIKE ?";
+            "SELECT * FROM customers WHERE LOWER(email) LIKE LOWER(?)";
 
     private static final String INSERT_CUSTOMER =
             "INSERT INTO "
