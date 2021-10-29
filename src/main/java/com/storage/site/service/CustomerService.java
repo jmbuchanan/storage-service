@@ -9,9 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -19,6 +17,7 @@ import java.util.Map;
 public class CustomerService {
 
     private final CustomerDao customerDao;
+    private final StripeService stripeService;
     private final PasswordEncoder passwordEncoder;
 
     public List<Customer> getAllCustomers() {
@@ -34,26 +33,12 @@ public class CustomerService {
     }
 
     public Customer register(Customer customer) {
-        Map<String, Object> customerParams = new HashMap<>();
-        customerParams.put("email", customer.getEmail());
-        com.stripe.model.Customer stripeCustomer;
-        String stripeCustomerId;
-        try {
-            stripeCustomer = com.stripe.model.Customer.create(customerParams);
-            stripeCustomerId = stripeCustomer.getId();
-        } catch (StripeException e) {
-            e.getMessage();
-            return customer;
-        }
-
-        customer.setStripeId(stripeCustomerId);
+        String stripeId = stripeService.createCustomer(customer.getEmail());
+        customer.setStripeId(stripeId);
         customer.setDateJoined(new Date());
-        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        customerDao.insertCustomer(customer);
-
-        //customer is overridden here by db record to include id
-        customer = getCustomerByEmail(customer.getEmail());
-
+        customer.encodePassword(passwordEncoder);
+        int id = customerDao.insertCustomer(customer);
+        customer.setId(id);
         return customer;
     }
 }

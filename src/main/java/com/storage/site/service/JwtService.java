@@ -15,8 +15,8 @@ import java.util.*;
 @Service
 public class JwtService {
 
-    private static Map<String, Integer> cachedUserTokens = new HashMap<>();
-    private static Map<String, Integer> cachedAdminTokens = new HashMap<>();
+    private final static Map<String, Integer> cachedUserTokens = new HashMap<>();
+    private final static Map<String, Integer> cachedAdminTokens = new HashMap<>();
 
     @Value("${jwt.expiration}")
     private long expiration;

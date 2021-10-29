@@ -39,9 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (customerIsAuthorizedToAccessResource) {
             chain.doFilter(request, response);
         } else {
-            String uuid = UUID.randomUUID().toString();
-            log.info("");
-            log.info(request.getMethod() + " " + request.getRequestURI());
+            log.info(request.getRemoteAddr() + ": " + request.getMethod() + " " + request.getRequestURI());
             log.info("Not authorized");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }

@@ -36,7 +36,6 @@ public class CustomerController {
     public ResponseEntity<String> addCustomer(@RequestBody Customer customerRequest) {
 
         log.info(String.format("Register account request for e-mail '%s'", customerRequest.getEmail()));
-        customerRequest.setEmail(customerRequest.getEmail().toLowerCase());
         Customer customer = customerService.getCustomerByEmail(customerRequest.getEmail());
         HttpHeaders headers = new HttpHeaders();
 

@@ -16,6 +16,6 @@ public class LoggingConfig {
     @Before("execution(* com.storage.site.controller.*.*(..))")
     public void logRequestStart() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        log.info(request.getMethod() + " " + request.getRequestURI());
+        log.info(request.getRemoteAddr() + ": " + request.getMethod() + " " + request.getRequestURI());
     }
 }

@@ -64,7 +64,7 @@ public class PaymentMethodDao {
         );
     }
 
-    public void setInactiveById(Long id) {
+    public void setInactiveById(int id) {
         jdbcTemplate.update(SET_INACTIVE_BY_ID, id);
     }
 }

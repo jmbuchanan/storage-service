@@ -5,16 +5,20 @@ import com.storage.site.model.rowmapper.CustomerRowMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @AllArgsConstructor
 @Component
 public class CustomerDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final CustomerRowMapper customerRowMapper;
 
     private static final String SELECT_ALL_CUSTOMERS =
@@ -30,7 +34,8 @@ public class CustomerDao {
             "INSERT INTO "
                     + "customers(stripe_id, email, password, phone_number, first_name, last_name, "
                     + "  street_address, second_street_address, city, state, zip, date_joined, is_admin) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?::state, ?, ?, ?) ";
+                    + "VALUES (:stripe_id, :email, :password, :phone_number, :first_name, :last_name, "
+                    + "  :street_address, :second_street_address, :city, :state, :zip, :date_joined, :is_admin) ";
 
     public List<Customer> getAllCustomers() {
         try {
@@ -59,22 +64,24 @@ public class CustomerDao {
         }
     }
 
-    public void insertCustomer(Customer customer) {
-        jdbcTemplate.update(
-                INSERT_CUSTOMER,
-                customer.getStripeId(),
-                customer.getEmail(),
-                customer.getPassword(),
-                customer.getPhoneNumber(),
-                customer.getFirstName(),
-                customer.getLastName(),
-                customer.getStreetAddress(),
-                customer.getSecondStreetAddress(),
-                customer.getCity(),
-                customer.getState().toString(),
-                customer.getZip(),
-                customer.getDateJoined(),
-                false
-        );
+    public int insertCustomer(Customer customer) {
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        Map<String, Object> params = new HashMap<>();
+        params.put("stripe_id", customer.getStripeId());
+        params.put("email", customer.getEmail());
+        params.put("password", customer.getPassword());
+        params.put("phone_number", customer.getPhoneNumber());
+        params.put("first_name", customer.getFirstName());
+        params.put("last_name", customer.getLastName());
+        params.put("street_address", customer.getStreetAddress());
+        params.put("second_street_address", customer.getSecondStreetAddress());
+        params.put("city", customer.getCity());
+        params.put("state", customer.getState());
+        params.put("zip", customer.getZip());
+        params.put("date_joined", customer.getDateJoined());
+        params.put("is_admin", false);
+        SqlParameterSource paramSource = new MapSqlParameterSource(params);
+        namedParameterJdbcTemplate.update(INSERT_CUSTOMER, paramSource, keyHolder, new String[] {"id"});
+        return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 }

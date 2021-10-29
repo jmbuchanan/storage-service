@@ -75,7 +75,17 @@ public class TransactionService {
         }
     }
 
-    public void insertCancelTransaction(CancelRequest cancelRequest) {
+    private void cancelImmediately(CancelRequest cancelRequest) {
+        Subscription subscription = subscriptionService.getSubscriptionByCustomerAndUnit(cancelRequest.getCustomerId(),
+                cancelRequest.getUnitId());
+        //gets overridden in transactionDao update statement
+        cancelRequest.setExecutionDate(JUNK_DATE_STRING);
+        insertCancelTransaction(cancelRequest);
+        transactionDao.updateExecutionDateToTodayBySubscriptionId(subscription.getId());
+        unitService.setUnitCustomerToNull(cancelRequest.getUnitId());
+    }
+
+    private void insertCancelTransaction(CancelRequest cancelRequest) {
         Subscription subscription = subscriptionService.getSubscriptionByCustomerAndUnit(cancelRequest.getCustomerId(),
                 cancelRequest.getUnitId());
         Transaction transaction = new Transaction(
@@ -88,14 +98,9 @@ public class TransactionService {
         transactionDao.insert(transaction);
     }
 
-    private void cancelImmediately(CancelRequest cancelRequest) {
-        Subscription subscription = subscriptionService.getSubscriptionByCustomerAndUnit(cancelRequest.getCustomerId(),
-                cancelRequest.getUnitId());
-        //gets overridden in transactionDao update statement
-        cancelRequest.setExecutionDate(JUNK_DATE_STRING);
-        insertCancelTransaction(cancelRequest);
-        transactionDao.updateExecutionDateToTodayBySubscriptionId(subscription.getId());
-        unitService.setUnitCustomerToNull(cancelRequest.getUnitId());
+    public Map<Integer, Date> getPendingCancellations(HttpServletRequest httpRequest) {
+        //TODO: implement
+        return new HashMap<>();
     }
 
     public List<Transaction> getAllTransactions() {
@@ -104,6 +109,7 @@ public class TransactionService {
 
     public int getCancelEligibilityForUnit(int id) {
         Transaction transaction = transactionDao.fetchLatestTransactionForUnit(id);
+
         if (isFutureBookRequest(transaction)) {
             return CANCEL_IMMEDIATELY_STATUS;
         } else if (isPastBookRequest(transaction)) {

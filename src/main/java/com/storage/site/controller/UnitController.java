@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @Slf4j
@@ -25,19 +26,18 @@ public class UnitController {
     private final JwtService jwtService;
     private final ExcelService excelService;
 
-    @GetMapping("/getAllUnits")
-    public List<Unit> getAllUnits() {
-        return unitService.getAllUnits();
-    }
-
-    @GetMapping("/getAllUnits/export")
+    @GetMapping("/export")
     public ResponseEntity<byte[]> exportExcelWorkbook() {
         return excelService.generateUnitWorkbook();
     }
 
-    @GetMapping("/fetchByCustomerId")
-    public List<Unit> fetchByCustomerId(HttpServletRequest request) {
-        int customerId = jwtService.parseCustomerId(request);
-        return unitService.getUnitsByCustomerId(customerId);
+    @GetMapping
+    public List<Unit> getUnitsByCustomerId(HttpServletRequest request, HttpServletResponse response, @RequestParam int customerId) {
+        if (customerId == jwtService.parseCustomerId(request)) {
+            return unitService.getUnitsByCustomerId(customerId);
+        } else {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return new ArrayList<>();
+        }
     }
 }

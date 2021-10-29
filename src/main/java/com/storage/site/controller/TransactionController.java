@@ -26,7 +26,6 @@ public class TransactionController {
 
     @PostMapping("/book")
     public ResponseEntity<String> book(@RequestBody BookRequest bookRequest, HttpServletRequest httpRequest) throws StripeException {
-        log.info(bookRequest.toString());
         if (transactionService.insertPendingTransaction(bookRequest, httpRequest)) {
             return new ResponseEntity<>("Unit booked", HttpStatus.OK);
         } else {

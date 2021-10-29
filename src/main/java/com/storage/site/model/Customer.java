@@ -3,6 +3,7 @@ package com.storage.site.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
@@ -50,6 +51,10 @@ public class Customer {
 
     public void setEmail(String email) {
         this.email = email.toLowerCase();
+    }
+
+    public void encodePassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(password);
     }
 
     @Override

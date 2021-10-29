@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @AllArgsConstructor
 @Component
@@ -64,7 +65,7 @@ public class SubscriptionDao {
         params.put("payment_method_id", cardId);
         SqlParameterSource paramSource = new MapSqlParameterSource(params);
         namedParameterJdbcTemplate.update(INSERT_SUBSCRIPTION, paramSource, keyHolder, new String[] {"id"});
-        return keyHolder.getKey().intValue();
+        return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
     public void updateSubscriptionStripeId(int subscriptionId, String stripeId) {
