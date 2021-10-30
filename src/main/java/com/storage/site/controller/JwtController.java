@@ -27,11 +27,8 @@ public class JwtController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/authenticate")
-    public ResponseEntity<String> authenticate(HttpServletRequest request) {
+    public void authenticate(HttpServletRequest request) {
         // The jwt filter intercepts the request and evaluates
-        // before this method returns
-        log.info("Preflight request authorized");
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/login")

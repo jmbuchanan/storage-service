@@ -48,7 +48,11 @@ public class UnitDao {
 
     public Unit fetchOneAvailableUnitByPrice(int id) {
         List<Unit> units = jdbcTemplate.query(SELECT_AVAILABLE_UNIT_BY_PRICE, new Object[] {id}, unitRowMapper);
-        return units.get(0);
+        if (units.size() > 0) {
+            return units.get(0);
+        } else {
+            return null;
+        }
     }
 
     public void updateCustomerOfUnit(int customerId, int unitId) {

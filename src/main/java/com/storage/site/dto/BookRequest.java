@@ -1,13 +1,14 @@
 package com.storage.site.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
+@Setter
 public class BookRequest {
-    private final String unitSize;
+    private final int unitSize;
     private final String startDate;
     private final int cardId;
 }

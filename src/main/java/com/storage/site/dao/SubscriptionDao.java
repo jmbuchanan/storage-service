@@ -24,8 +24,8 @@ public class SubscriptionDao {
     final private SubscriptionRowMapper subscriptionRowMapper;
 
     private static final String INSERT_SUBSCRIPTION =
-            "INSERT INTO subscriptions (is_active, customer_id, unit_id, payment_method_id) " +
-                    "VALUES (:is_active, :customer_id, :unit_id, :payment_method_id) " +
+            "INSERT INTO subscriptions (is_active, customer_id, unit_id, payment_method_id, stripe_id) " +
+                    "VALUES (:is_active, :customer_id, :unit_id, :payment_method_id, :stripe_id) " +
                     "RETURNING id";
 
     private static final String UPDATE_SUBSCRIPTION_STRIPE_ID_AND_SET_TO_ACTIVE =
@@ -56,13 +56,14 @@ public class SubscriptionDao {
                     "WHERE id = ? "
             ;
 
-    public int insertSubscription(int customerId, int unitId, int cardId) {
+    public int insertSubscription(int customerId, int unitId, int cardId, String stripeId) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         Map<String, Object> params = new HashMap<>();
         params.put("is_active", false);
         params.put("customer_id", customerId);
         params.put("unit_id", unitId);
         params.put("payment_method_id", cardId);
+        params.put("stripe_id", stripeId);
         SqlParameterSource paramSource = new MapSqlParameterSource(params);
         namedParameterJdbcTemplate.update(INSERT_SUBSCRIPTION, paramSource, keyHolder, new String[] {"id"});
         return Objects.requireNonNull(keyHolder.getKey()).intValue();

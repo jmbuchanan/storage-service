@@ -6,6 +6,7 @@ import com.storage.site.dto.CancelRequest;
 import com.storage.site.model.*;
 import com.storage.site.util.DateUtil;
 import com.stripe.exception.StripeException;
+import com.stripe.param.SubscriptionCreateParams;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -45,10 +46,10 @@ public class TransactionService {
     }
 
     public boolean insertPendingTransaction(BookRequest bookRequest, HttpServletRequest request) {
-        Unit unit = unitService.getOneUnitForPrice(Integer.parseInt(bookRequest.getUnitSize()));
+        Unit unit = unitService.getOneUnitForPrice(bookRequest.getUnitSize());
         if (unit != null) {
             int customerId = jwtService.parseCustomerId(request);
-            int subscriptionId = subscriptionService.insertSubscription(customerId, unit.getUnitNumber(), bookRequest.getCardId());
+            int subscriptionId = subscriptionService.insertSubscription(customerId, unit.getId(), bookRequest.getCardId(), "");
             //0 id gets overwritten when added to db
             Transaction transaction = new Transaction(
                     0,
@@ -58,7 +59,7 @@ public class TransactionService {
                     subscriptionId
             );
             transactionDao.insert(transaction);
-            unitService.updateCustomerOfUnit(customerId, unit.getUnitNumber());
+            unitService.updateCustomerOfUnit(customerId, unit.getId());
             return true;
         } else {
             return false;
@@ -141,6 +142,7 @@ public class TransactionService {
         try {
             com.stripe.model.Subscription stripeSubscription =
                 com.stripe.model.Subscription.create(params);
+
             subscriptionService.updateSubscriptionStripeId(subscription.getId(), stripeSubscription.getId());
         } catch (StripeException se) {
             se.getMessage();

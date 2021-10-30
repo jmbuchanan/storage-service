@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 public class Unit {
 
-    private int unitNumber;
+    private int id;
     private int priceId;
     private int customerId;
 

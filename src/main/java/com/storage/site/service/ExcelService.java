@@ -196,7 +196,7 @@ public class ExcelService {
         //Write Data
         for (int i = 0; i < units.size(); i++) {
             row = sheet.createRow(i+1);
-            row.createCell(0).setCellValue(units.get(i).getUnitNumber());
+            row.createCell(0).setCellValue(units.get(i).getId());
         }
 
         //Autosize Columns
