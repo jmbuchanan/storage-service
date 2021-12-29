@@ -1,7 +1,7 @@
 package com.storage.site.dao;
 
-import com.storage.site.model.Customer;
-import com.storage.site.model.rowmapper.CustomerRowMapper;
+import com.storage.site.domain.Customer;
+import com.storage.site.domain.rowmapper.CustomerRowMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+
 
 @AllArgsConstructor
 @Component

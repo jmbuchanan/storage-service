@@ -47,8 +47,7 @@ CREATE TABLE IF NOT EXISTS prices (
 
 CREATE TABLE IF NOT EXISTS units (
     id serial NOT NULL UNIQUE,
-    price_id integer REFERENCES prices(id),
-    customer_id integer REFERENCES customers(id)
+    price_id integer REFERENCES prices(id)
 );
 
 CREATE TABLE IF NOT EXISTS payment_methods (
@@ -64,17 +63,9 @@ CREATE TABLE IF NOT EXISTS payment_methods (
 CREATE TABLE IF NOT EXISTS subscriptions (
     id serial PRIMARY KEY,
     stripe_id varchar(255),
-    is_active boolean,
+    start_date date,
+    end_date date,
     customer_id integer REFERENCES customers(id),
     unit_id integer REFERENCES units(id),
     payment_method_id integer REFERENCES payment_methods(id)
 );
-
-CREATE TABLE IF NOT EXISTS transactions (
-    id serial PRIMARY KEY,
-    transaction_type transaction_type,
-    request_date date,
-    execution_date date,
-    subscription_id integer REFERENCES subscriptions(id)
-);
-

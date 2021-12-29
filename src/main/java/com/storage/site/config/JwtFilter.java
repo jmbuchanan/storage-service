@@ -1,9 +1,7 @@
 package com.storage.site.config;
 
-import com.storage.site.service.CustomerService;
-import com.storage.site.service.JwtService;
+import com.storage.site.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -14,20 +12,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private JwtService jwtService;
+    private final AuthService authService;
 
     private enum Role {
         NONE, USER, ADMIN;
     }
 
-    public JwtFilter(JwtService jwtService) {
-        this.jwtService = jwtService;
+    public JwtFilter(AuthService authService) {
+        this.authService = authService;
     }
 
     @Override
@@ -105,13 +102,13 @@ public class JwtFilter extends OncePerRequestFilter {
                 break;
 
             case USER:
-                if (jwtService.validateUser(request)) {
+                if (authService.validateUser(request)) {
                     hasRoleRequired = true;
                 }
                 break;
 
             case ADMIN:
-                if (jwtService.validateAdmin(request)) {
+                if (authService.validateAdmin(request)) {
                     hasRoleRequired = true;
                 }
                 break;

@@ -1,19 +1,25 @@
 package com.storage.site.service;
 
-import com.storage.site.model.Customer;
+import com.storage.site.dao.CustomerDao;
+import com.storage.site.domain.Customer;
+import com.storage.site.exception.ForbiddenException;
+import com.storage.site.exception.NotFoundException;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @Slf4j
 @Service
-public class JwtService {
+public class AuthService {
 
     private final static Map<String, Integer> cachedUserTokens = new HashMap<>();
     private final static Map<String, Integer> cachedAdminTokens = new HashMap<>();
@@ -24,6 +30,14 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
+    private final CustomerDao customerDao;
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthService(CustomerDao customerDao, PasswordEncoder passwordEncoder) {
+        this.customerDao = customerDao;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Scheduled(cron="0 0 0 * * *", zone="America/New_York")
     private void clearCaches() {
         log.info(String.format("Clearing %d cached user tokens", cachedUserTokens.size()));
@@ -32,6 +46,30 @@ public class JwtService {
         cachedAdminTokens.clear();
     }
 
+    public void login(Customer customerLogin, HttpServletResponse response) {
+
+        String email = customerLogin.getEmail();
+        String providedPassword = customerLogin.getPassword();
+
+        log.info(String.format("Client sending request to log in as '%s'", email));
+
+        Customer customer = customerDao.getCustomerByEmail(email);
+
+        if (customer.getId() == 0) {
+            log.info(String.format("No customer found with email '%s'. Returning 404", email));
+            throw new NotFoundException();
+        }
+
+        String storedPassword = customer.getPassword();
+
+        if (passwordEncoder.matches(providedPassword, storedPassword)) {
+            String token = generateToken(customer);
+            response.setHeader(HttpHeaders.SET_COOKIE, String.format("Authorization=%s; Path=/", token));
+        } else {
+            log.info("Password does not match");
+            throw new ForbiddenException();
+        }
+    }
     public String generateToken(Customer customer) {
 
         Map<String, Object> claims = makeClaimsFrom(customer);

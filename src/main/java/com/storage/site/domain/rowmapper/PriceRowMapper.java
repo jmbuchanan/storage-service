@@ -1,6 +1,6 @@
-package com.storage.site.model.rowmapper;
+package com.storage.site.domain.rowmapper;
 
-import com.storage.site.model.Price;
+import com.storage.site.domain.Price;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;

@@ -1,9 +1,4 @@
-/*
- * 10x20 $80
- * 5x10 $40
-*/
-
-package com.storage.site.model;
+package com.storage.site.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +11,6 @@ public class Unit {
 
     private int id;
     private int priceId;
-    private int customerId;
 
 }
 

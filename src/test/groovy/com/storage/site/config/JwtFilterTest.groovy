@@ -1,7 +1,7 @@
 package com.storage.site.config
 
-import com.storage.site.service.CustomerService
-import com.storage.site.service.JwtService
+
+import com.storage.site.service.AuthService
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockFilterChain
 import org.springframework.mock.web.MockHttpServletRequest
@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 class JwtFilterTest extends Specification {
 
-    def jwtService = Mock(JwtService)
+    def jwtService = Mock(AuthService)
 
     def jwtFilter = new JwtFilter(jwtService)
 

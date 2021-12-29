@@ -1,7 +1,6 @@
-package com.storage.site.model.rowmapper;
+package com.storage.site.domain.rowmapper;
 
-import com.storage.site.model.PaymentMethod;
-import com.storage.site.util.DateUtil;
+import com.storage.site.domain.PaymentMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -22,7 +21,8 @@ public class PaymentMethodRowMapper implements RowMapper<PaymentMethod> {
                 rs.getString("card_brand"),
                 rs.getDate("date_added"),
                 rs.getString("last_four"),
-                rs.getInt("customer_id")
+                rs.getInt("customer_id"),
+                false
         );
     }
 }

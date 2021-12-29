@@ -1,4 +1,4 @@
-package com.storage.site.model;
+package com.storage.site.domain;
 
 import lombok.Data;
 

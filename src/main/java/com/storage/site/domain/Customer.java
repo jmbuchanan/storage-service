@@ -1,15 +1,16 @@
-package com.storage.site.model;
+package com.storage.site.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
 @Slf4j
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Customer {
 
     private int id;
@@ -27,27 +28,6 @@ public class Customer {
     private Date dateJoined;
     private boolean isAdmin;
 
-    public Customer() {}
-
-    public Customer(int id, String stripeId, String email, String password, String phoneNumber, String firstName, String lastName,
-                    String streetAddress, String secondStreetAddress, String city, State state, String zip, Date dateJoined, boolean isAdmin
-        ) {
-        this.id = id;
-        this.stripeId = stripeId;
-        this.email = email.toLowerCase();
-        this.password = password;
-        this.phoneNumber = phoneNumber;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.streetAddress = streetAddress;
-        this.secondStreetAddress = secondStreetAddress;
-        this.city = city;
-        this.state = state;
-        this.zip = zip;
-        this.dateJoined = dateJoined;
-        this.isAdmin = isAdmin;
-
-    }
 
     public void setEmail(String email) {
         this.email = email.toLowerCase();

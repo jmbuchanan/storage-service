@@ -1,7 +1,7 @@
 package com.storage.site.dao;
 
-import com.storage.site.model.PaymentMethod;
-import com.storage.site.model.rowmapper.PaymentMethodRowMapper;
+import com.storage.site.domain.PaymentMethod;
+import com.storage.site.domain.rowmapper.PaymentMethodRowMapper;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;

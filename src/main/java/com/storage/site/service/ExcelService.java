@@ -1,8 +1,8 @@
 package com.storage.site.service;
 
-import com.storage.site.model.Customer;
-import com.storage.site.model.Transaction;
-import com.storage.site.model.Unit;
+import com.storage.site.dao.UnitDao;
+import com.storage.site.domain.Customer;
+import com.storage.site.domain.Unit;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.DefaultIndexedColorMap;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -25,15 +25,13 @@ import java.util.stream.IntStream;
 public class ExcelService {
 
     private final CustomerService customerService;
-    private final TransactionService transactionService;
-    private final UnitService unitService;
+    private final UnitDao unitDao;
 
     private final XSSFColor headerColor = new XSSFColor(new java.awt.Color(33, 47, 61), new DefaultIndexedColorMap());
 
-    public ExcelService(CustomerService customerService, TransactionService transactionService, UnitService unitService) {
+    public ExcelService(CustomerService customerService, UnitDao unitDao) {
         this.customerService = customerService;
-        this.transactionService = transactionService;
-        this.unitService = unitService;
+        this.unitDao = unitDao;
     }
 
     public ResponseEntity<byte[]> generateCustomerWorkbook() {
@@ -110,66 +108,11 @@ public class ExcelService {
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
 
-    public ResponseEntity<byte[]> generateTransactionWorkbook() {
-
-        List<Transaction> transactions = new ArrayList<>();
-        transactionService.getAllTransactions().forEach(
-                transaction -> transactions.add(transaction));
-
-        //Create Workbook
-        XSSFWorkbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet("Transactions");
-
-        XSSFCellStyle style = makeHeaderStyle(wb);
-
-        //Create Headers
-        List<String> header = new ArrayList<>();
-        header.add("Transaction Id");
-        header.add("Type");
-        header.add("Date");
-        header.add("Amount");
-        header.add("Customer Id");
-        header.add("Unit Id");
-
-        Row row = sheet.createRow(0);
-
-        for (int i = 0; i < header.size(); i++) {
-            row.createCell(i).setCellValue(header.get(i));
-            row.getCell(i).setCellStyle(style);
-        }
-
-        //Write Data
-        for (int i = 0; i < transactions.size(); i++) {
-            row = sheet.createRow(i+1);
-            row.createCell(0).setCellValue(transactions.get(i).getId());
-            row.createCell(1).setCellValue(transactions.get(i).getType().toString());
-        }
-
-        //Autosize Columns
-        IntStream.range(0,5).forEach(column -> sheet.autoSizeColumn(column));
-
-        //Write Workbook to byte array
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        try {
-            wb.write(baos);
-        } catch (Exception e) {
-            e.getMessage();
-        }
-
-        byte[] bytes = baos.toByteArray();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Transactions.xlsx");
-
-        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
-    }
 
     public ResponseEntity<byte[]> generateUnitWorkbook() {
 
         List<Unit> units = new ArrayList<>();
-        unitService.getAllUnits().forEach(
+        unitDao.getAll().forEach(
                 unit -> units.add(unit));
 
         //Create Workbook

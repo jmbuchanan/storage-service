@@ -1,6 +1,6 @@
-package com.storage.site.model.rowmapper;
+package com.storage.site.domain.rowmapper;
 
-import com.storage.site.model.Subscription;
+import com.storage.site.domain.Subscription;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,8 @@ public class SubscriptionRowMapper implements RowMapper<Subscription> {
             return new Subscription(
                     rs.getInt("id"),
                     rs.getString("stripe_id"),
-                    rs.getBoolean("is_active"),
+                    rs.getDate("start_date"),
+                    rs.getDate("end_date"),
                     rs.getInt("customer_id"),
                     rs.getInt("unit_id"),
                     rs.getInt("payment_method_id")

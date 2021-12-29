@@ -1,4 +1,4 @@
-package com.storage.site.model;
+package com.storage.site.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +20,7 @@ public class PaymentMethod {
     private Date dateAdded;
     private String lastFour;
     private int customerId;
+    private boolean canBeDeleted;
 
         @Override
         //example: Visa ending in 4229 belonging to customer 3.

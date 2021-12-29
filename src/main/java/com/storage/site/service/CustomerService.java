@@ -1,8 +1,7 @@
 package com.storage.site.service;
 
 import com.storage.site.dao.CustomerDao;
-import com.storage.site.model.Customer;
-import com.stripe.exception.StripeException;
+import com.storage.site.domain.Customer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,16 +15,12 @@ import java.util.List;
 @AllArgsConstructor
 public class CustomerService {
 
-    private final CustomerDao customerDao;
     private final StripeService stripeService;
+    private final CustomerDao customerDao;
     private final PasswordEncoder passwordEncoder;
 
     public List<Customer> getAllCustomers() {
         return customerDao.getAllCustomers();
-    }
-
-    public Customer getCustomerById(int id) {
-        return customerDao.getCustomerById(id);
     }
 
     public Customer getCustomerByEmail(String email) {

@@ -1,14 +1,12 @@
-package com.storage.site.model.rowmapper;
+package com.storage.site.domain.rowmapper;
 
-import com.storage.site.model.Unit;
-import com.storage.site.util.DateUtil;
+import com.storage.site.domain.Unit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 
 @Slf4j
 @Component
@@ -19,8 +17,7 @@ public class UnitRowMapper implements RowMapper<Unit> {
 
         return new Unit(
                 rs.getInt("id"),
-                rs.getInt("price_id"),
-                rs.getInt("customer_id")
+                rs.getInt("price_id")
         );
     }
 }

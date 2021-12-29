@@ -1,7 +1,7 @@
 package com.storage.site.dao;
 
-import com.storage.site.model.Price;
-import com.storage.site.model.rowmapper.PriceRowMapper;
+import com.storage.site.domain.Price;
+import com.storage.site.domain.rowmapper.PriceRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 

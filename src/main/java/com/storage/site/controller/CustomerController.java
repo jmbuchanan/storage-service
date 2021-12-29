@@ -1,9 +1,9 @@
 package com.storage.site.controller;
 
-import com.storage.site.model.Customer;
+import com.storage.site.domain.Customer;
 import com.storage.site.service.CustomerService;
 import com.storage.site.service.ExcelService;
-import com.storage.site.service.JwtService;
+import com.storage.site.service.AuthService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +20,7 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final ExcelService excelService;
-    private final JwtService jwtService;
+    private final AuthService authService;
 
     @GetMapping("/getAllCustomers")
     public List<Customer> getAllCustomers() {
@@ -46,7 +46,7 @@ public class CustomerController {
             log.info("Verified this is not an existing customer. Creating record in database");
             customer = customerService.register(customerRequest);
             if (customer.getStripeId() != null) {
-                String token = jwtService.generateToken(customer);
+                String token = authService.generateToken(customer);
                 headers.add("Set-Cookie", "Authorization=" + token + "; Path=/");
                 return new ResponseEntity<>(headers, HttpStatus.OK);
             } else {
