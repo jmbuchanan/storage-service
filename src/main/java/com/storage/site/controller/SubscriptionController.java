@@ -2,6 +2,7 @@ package com.storage.site.controller;
 
 import com.storage.site.domain.CancelRequest;
 import com.storage.site.dto.input.BookRequestDTO;
+import com.storage.site.dto.input.CancelRequestDTO;
 import com.storage.site.dto.output.SubscriptionDTO;
 import com.storage.site.service.SubscriptionService;
 import lombok.AllArgsConstructor;
@@ -25,8 +26,8 @@ public class SubscriptionController {
     }
 
     @PutMapping
-    public void cancel(@RequestBody CancelRequest cancelRequest, HttpServletRequest request) {
-        subscriptionService.cancel(cancelRequest, request);
+    public void cancel(@RequestBody CancelRequestDTO cancelRequestDTO, HttpServletRequest request) {
+        subscriptionService.cancel(cancelRequestDTO, request);
     }
 
     @GetMapping

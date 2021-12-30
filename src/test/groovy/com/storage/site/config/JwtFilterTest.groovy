@@ -29,28 +29,4 @@ class JwtFilterTest extends Specification {
         then:
         response.getStatus() != HttpStatus.FORBIDDEN.value()
     }
-
-    def "admin-protected resource requires admin authorization"() {
-        given:
-        request.setRequestURI("/transactions/getAllTransactions")
-
-        when:
-        jwtService.validateAdmin(request) >> false
-        jwtFilter.doFilterInternal(request, response, chain)
-
-        then:
-        response.getStatus() == HttpStatus.FORBIDDEN.value()
-    }
-
-    def "all other resources require user authorization"() {
-        given:
-        request.setRequestURI("/resource/not/whitelisted")
-
-        when:
-        jwtService.validateUser(request) >> false
-        jwtFilter.doFilterInternal(request, response, chain)
-
-        then:
-        response.getStatus() == HttpStatus.FORBIDDEN.value()
-    }
 }

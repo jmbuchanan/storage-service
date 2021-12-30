@@ -2,7 +2,9 @@ package com.storage.site.service;
 
 import com.storage.site.dao.*;
 import com.storage.site.dto.input.BookRequestDTO;
+import com.storage.site.dto.input.CancelRequestDTO;
 import com.storage.site.dto.input.mapper.BookRequestDTOMapper;
+import com.storage.site.dto.input.mapper.CancelRequestDTOMapper;
 import com.storage.site.dto.output.SubscriptionDTO;
 import com.storage.site.dto.output.mapper.SubscriptionDTOMapper;
 import com.storage.site.exception.BadRequestException;
@@ -99,9 +101,10 @@ public class SubscriptionService {
         return subscriptionDTOs;
     }
 
-    public void cancel(CancelRequest cancelRequest, HttpServletRequest request) {
+    public void cancel(CancelRequestDTO cancelRequestDTO, HttpServletRequest request) {
+        CancelRequest cancelRequest = CancelRequestDTOMapper.map(cancelRequestDTO);
         int customerId = authService.parseCustomerId(request);
-       List<Subscription> subscriptions = subscriptionDao.getSubscriptionsByCustomer(customerId);
+        List<Subscription> subscriptions = subscriptionDao.getSubscriptionsByCustomer(customerId);
         List<Subscription> activeSubscriptions = filterActiveSubscriptions(subscriptions);
         Subscription subscriptionForUnit = activeSubscriptions.stream()
                 .filter(subscription -> subscription.getUnitId() == cancelRequest.getUnitId())
