@@ -12,16 +12,6 @@ DO $$ BEGIN
     WHEN duplicate_object THEN null;
 END $$;
 
-DO $$ BEGIN
-    CREATE TYPE transaction_type
-        AS ENUM (
-        'BOOK',
-        'CANCEL'
-        );
-    EXCEPTION
-    WHEN duplicate_object THEN null;
-END $$;
-
 CREATE TABLE IF NOT EXISTS customers (
     id serial PRIMARY KEY,
     stripe_id varchar(100) UNIQUE,

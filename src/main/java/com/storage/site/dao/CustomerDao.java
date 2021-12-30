@@ -36,7 +36,7 @@ public class CustomerDao {
                     + "customers(stripe_id, email, password, phone_number, first_name, last_name, "
                     + "  street_address, second_street_address, city, state, zip, date_joined, is_admin) "
                     + "VALUES (:stripe_id, :email, :password, :phone_number, :first_name, :last_name, "
-                    + "  :street_address, :second_street_address, :city, :state, :zip, :date_joined, :is_admin) ";
+                    + "  :street_address, :second_street_address, :city, CAST(:state as state), :zip, :date_joined, :is_admin) ";
 
     public List<Customer> getAllCustomers() {
         try {
@@ -77,7 +77,7 @@ public class CustomerDao {
         params.put("street_address", customer.getStreetAddress());
         params.put("second_street_address", customer.getSecondStreetAddress());
         params.put("city", customer.getCity());
-        params.put("state", customer.getState());
+        params.put("state", customer.getState().toString());
         params.put("zip", customer.getZip());
         params.put("date_joined", customer.getDateJoined());
         params.put("is_admin", false);
