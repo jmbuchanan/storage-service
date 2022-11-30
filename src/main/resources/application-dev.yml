@@ -1,5 +1,0 @@
-server:
-  port: 8081
-
-cors:
-  origin: https://www.jeffersonminiwarehouses.com, https://jeffersonminiwarehouses.com
