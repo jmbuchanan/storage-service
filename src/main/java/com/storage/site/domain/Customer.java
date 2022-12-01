@@ -4,6 +4,9 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Slf4j
@@ -15,15 +18,24 @@ public class Customer {
 
     private int id;
     private String stripeId;
+    @Email
     private String email;
+    @NotBlank(message = "Password is mandatory.")
     private String password;
+    @NotBlank(message = "Phone number is mandatory")
     private String phoneNumber;
+    @NotBlank(message = "First name is mandatory")
     private String firstName;
+    @NotBlank(message = "Last name is mandatory")
     private String lastName;
+    @NotBlank(message = "Street address is mandatory")
     private String streetAddress;
     private String secondStreetAddress;
+    @NotBlank(message = "City is mandatory")
     private String city;
+    @NotNull(message = "State is mandatory")
     private State state;
+    @NotBlank(message = "Zip is mandatory")
     private String zip;
     private Date dateJoined;
     private boolean isAdmin;
