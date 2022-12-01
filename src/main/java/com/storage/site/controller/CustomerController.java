@@ -62,18 +62,6 @@ public class CustomerController {
         }
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        for (ObjectError error : ex.getBindingResult().getAllErrors()) {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        }
-        return errors;
-    }
-
     private boolean isExistingCustomer(Customer customer) {
         return customer.getId() != 0L;
     }
