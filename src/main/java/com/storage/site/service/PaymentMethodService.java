@@ -8,6 +8,7 @@ import com.storage.site.domain.PaymentMethod;
 import com.storage.site.domain.Subscription;
 import com.storage.site.dto.output.PaymentMethodDTO;
 import com.storage.site.dto.output.mapper.PaymentMethodDTOMapper;
+import com.storage.site.exception.BadRequestException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,12 @@ public class PaymentMethodService {
 
     public void setInactive(int id, int customerId) {
         PaymentMethod paymentMethod = paymentMethodDao.getPaymentMethodById(id);
+        List<Subscription> subscriptions = subscriptionDao.getSubscriptionsByCustomer(customerId);
+        if (subscriptions.stream().anyMatch(subscription ->
+                subscription.isActive() &&
+                subscription.getPaymentMethodId() == id)) {
+            throw new BadRequestException();
+        }
         if (paymentMethod.getCustomerId() == customerId) {
             paymentMethodDao.setInactiveById(id);
         } else {

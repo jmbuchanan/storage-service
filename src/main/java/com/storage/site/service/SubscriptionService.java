@@ -38,6 +38,9 @@ public class SubscriptionService {
 
     public void create(BookRequestDTO bookRequestDTO, HttpServletRequest request) {
         BookRequest bookRequest = BookRequestDTOMapper.map(bookRequestDTO);
+        if (!bookRequest.hasValidStartDate()) {
+            throw new BadRequestException();
+        }
         List<Unit> units = unitDao.getAvailableUnitsByPrice(bookRequestDTO.getUnitSize());
         if (units.size() == 0) {
             throw new ConflictException();

@@ -18,7 +18,7 @@ public class Subscription {
     private int paymentMethodId;
 
     public boolean isActive() {
-        //either no end date, or end date is in future
+        //either no end date or end date is in future
         if (endDate == null) {
             return true;
         }
